@@ -149,7 +149,7 @@ export function SessionDetailPage({ sessionId }: { sessionId: string }) {
               <CardHeader>
                 <div className="flex flex-wrap items-center gap-3">
                   <CardTitle>Overview</CardTitle>
-                  <StatusPill label="AI-generated draft - review before sharing" tone="accent" showDot={false} />
+                  <StatusPill label="Draft recap - review before sharing" tone="accent" showDot={false} />
                 </div>
                 <CardDescription data-testid="summary-overview">
                   {session.overview}

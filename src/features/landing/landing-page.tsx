@@ -1,250 +1,330 @@
 import Link from "next/link";
-import {
-  ArrowRight,
-  CheckCircle2,
-  FileUp,
-  Languages,
-  ListChecks,
-  Mic,
-  Radio,
-} from "lucide-react";
+import { ArrowRight, Mic, PlayCircle } from "lucide-react";
 
 import { RelayLogo } from "@/components/relay-logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { DEMO_SESSION } from "@/lib/demo-data";
+import { AUDIENCE_OPTIONS } from "@/lib/constants";
 
 import { LandingPreview } from "@/features/landing/landing-preview";
 
-const problems = [
+const valuePillars = [
   {
-    title: "Too much jargon",
-    body: "People speak in shortcuts, acronyms, and internal language that others do not share.",
+    number: "01",
+    title: "Clarify",
+    body: "Capture what was actually said so the original meaning never disappears behind a rewrite.",
   },
   {
-    title: "Wrong explanation for the audience",
-    body: "The same sentence should sound different to a client, an executive, a new hire, or a non-native speaker.",
+    number: "02",
+    title: "Adapt",
+    body: "Switch the explanation for executives, clients, engineers, new hires, or non-native speakers in one click.",
   },
   {
-    title: "Meetings end without clear actions",
-    body: "Important decisions and owners get lost unless someone manually cleans up notes afterward.",
+    number: "03",
+    title: "Align",
+    body: "Turn the conversation into a recap with summary, decisions, action items, and supporting context.",
   },
 ];
 
-const features = [
-  "Live transcript",
-  "Audience mode",
-  "Plain-English rewrite",
-  "Decisions + actions",
-  "Export recap",
+const steps = [
+  {
+    number: "01",
+    title: "Capture what was said",
+    body: "Use live speech capture when the browser supports it, or start from a ready-made sample scenario instantly.",
+  },
+  {
+    number: "02",
+    title: "Rewrite for who is listening",
+    body: "Keep the original sentence visible while Common Ground reframes it for the people in the room.",
+  },
+  {
+    number: "03",
+    title: "Turn conversation into recap and action items",
+    body: "Leave the meeting with a grounded summary, explicit decisions, and clear next steps tied to the transcript.",
+  },
+];
+
+const useCases = [
+  "Client calls",
+  "Onboarding",
+  "Project handoffs",
+  "Leadership updates",
+  "Demos and presentations",
+];
+
+const proofPoints = [
+  "People do not struggle because the message is missing. They struggle because the message is framed for the wrong listener.",
+  "Common Ground solves that in real time by keeping the source visible and adapting the explanation without changing the core meaning.",
+  "That makes the product instantly legible in a demo: speech in, clearer audience-ready explanation out, then a recap you can actually use.",
 ];
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen">
-      <header className="page-shell flex items-center justify-between py-6">
-        <RelayLogo />
-        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
-          <Link href="#how-it-works">How it works</Link>
-          <Link href="#example">Example</Link>
-          <Link href="/app/history">History</Link>
-        </nav>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <Button asChild variant="outline">
-            <Link href="/app">Continue as guest</Link>
+    <div className="bg-[var(--bg-light)] text-foreground">
+      <div className="border-b border-[var(--line-dark)] bg-[rgba(124,77,255,0.18)]">
+        <div className="section-shell flex min-h-11 items-center justify-center text-center text-[13px] font-medium text-[var(--ink)]">
+          Built for clearer communication in meetings, demos, and onboarding
+        </div>
+      </div>
+
+      <header className="sticky top-0 z-50 border-b border-[var(--line-dark)] bg-[rgba(252,251,248,0.94)] backdrop-blur">
+        <div className="page-shell flex items-center justify-between gap-4 py-4">
+          <RelayLogo />
+          <nav className="hidden items-center gap-8 text-sm font-medium text-[rgba(23,19,41,0.74)] lg:flex">
+            <Link href="#how-it-works" className="hover:text-foreground">
+              How it works
+            </Link>
+            <Link href="#audience-modes" className="hover:text-foreground">
+              Audience modes
+            </Link>
+            <Link href="#use-cases" className="hover:text-foreground">
+              Use cases
+            </Link>
+            <Link href="#demo" className="hover:text-foreground">
+              Demo
+            </Link>
+            <Link href="#about" className="hover:text-foreground">
+              About
+            </Link>
+          </nav>
+          <Button asChild size="sm" className="min-w-[122px]">
+            <Link href="#demo">Try demo</Link>
           </Button>
         </div>
       </header>
 
-      <main className="page-shell pb-20">
-        <section className="grid gap-10 py-10 lg:grid-cols-[1.02fr_0.98fr] lg:items-center lg:py-16">
-          <div className="space-y-8">
-            <div className="space-y-5">
-              <p className="eyebrow">Real-time communication adaptation</p>
-              <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl xl:text-[3.5rem]">
-                Speak normally. Relay makes it understandable.
-              </h1>
-              <p className="max-w-2xl text-lg text-muted-foreground">
-                Relay listens to what someone is saying in a meeting or presentation
-                and turns it into clearer words for the people listening.
-              </p>
-              <p className="max-w-2xl text-base text-muted-foreground">
-                It helps people understand each other better in real time. Then it
-                turns the conversation into a short recap with decisions and action
-                items.
-              </p>
-            </div>
+      <main>
+        <section className="relative overflow-hidden border-b border-[var(--line-dark)]">
+          <div className="absolute inset-0 grid-fade" />
+          <div className="page-shell relative grid gap-10 py-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(560px,1.12fr)] lg:items-start lg:py-16 xl:gap-12">
+            <div className="space-y-7 pt-4 lg:max-w-[640px] lg:pt-10">
+              <div className="space-y-5">
+                <p className="eyebrow">Real-time communication adaptation</p>
+                <h1 className="max-w-[11ch] text-[var(--ink)]">
+                  Speak once. Meet people <span className="capsule-outline">where they are.</span>
+                </h1>
+                <p className="max-w-xl body-large">
+                  Common Ground listens to what someone is saying in a meeting or presentation and turns it into clearer words for the people listening.
+                </p>
+                <p className="max-w-xl text-base leading-7 text-[rgba(23,19,41,0.76)]">
+                  It keeps the original meaning visible, adapts the explanation for the selected audience, and ends with a recap you can actually use.
+                </p>
+              </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-              <Button asChild size="lg">
-                <Link href="/app/demo">
-                  Try sample demo
-                  <ArrowRight className="size-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/app/live">
-                  <Mic className="size-4" />
-                  Start live session
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="ghost">
-                <Link href="/app/upload">
-                  <FileUp className="size-4" />
-                  Upload recording
-                </Link>
-              </Button>
-            </div>
+              <div className="flex flex-wrap gap-3.5">
+                <Button asChild size="lg">
+                  <Link href="/app/demo">
+                    <PlayCircle className="size-4" />
+                    Try sample demo
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="outline">
+                  <Link href="/app/live">
+                    <Mic className="size-4" />
+                    Start live session
+                  </Link>
+                </Button>
+                <Button asChild size="lg" variant="ghost">
+                  <Link href="#how-it-works">
+                    View how it works
+                    <ArrowRight className="size-4" />
+                  </Link>
+                </Button>
+              </div>
 
-            <div className="grid gap-4 sm:grid-cols-3">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Live transcript</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  See speech as text while Relay keeps the original source visible.
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Audience adaptation</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  Switch between executive, client, engineer, new hire, and clear-language views.
-                </CardContent>
-              </Card>
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base">Traceable recap</CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm text-muted-foreground">
-                  Decisions, owners, and blockers link back to the transcript lines that support them.
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          <LandingPreview />
-        </section>
-
-        <section className="grid gap-4 py-12 md:grid-cols-3">
-          {problems.map((item) => (
-            <Card key={item.title}>
-              <CardHeader>
-                <CardTitle>{item.title}</CardTitle>
-                <CardDescription>{item.body}</CardDescription>
-              </CardHeader>
-            </Card>
-          ))}
-        </section>
-
-        <section className="surface mb-12 grid gap-4 p-6 md:grid-cols-5">
-          {features.map((feature) => (
-            <div key={feature} className="flex items-center gap-3 rounded-[22px] bg-card/70 px-4 py-4">
-              <CheckCircle2 className="size-4 text-accent" />
-              <span className="text-sm font-medium text-foreground">{feature}</span>
-            </div>
-          ))}
-        </section>
-
-        <section className="py-12" id="how-it-works">
-          <div className="mb-8">
-            <p className="eyebrow">How it works</p>
-            <h2 className="mt-3 section-title">Three steps from confusion to clarity</h2>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <Card>
-              <CardHeader>
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-accent/12 text-accent">
-                  <Radio className="size-5" />
+              <div className="grid gap-4 pt-2 sm:grid-cols-3">
+                <div className="rounded-[30px] border border-border bg-white p-5 shadow-panel">
+                  <p className="eyebrow">Live transcript</p>
+                  <p className="mt-3 text-sm leading-7 text-[rgba(23,19,41,0.76)]">
+                    See speech as text while the original source stays visible.
+                  </p>
                 </div>
-                <CardTitle className="mt-4">1. Capture the conversation</CardTitle>
-                <CardDescription>
-                  Start a live session or upload a recording. Relay shows the original
-                  transcript as the conversation unfolds.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader>
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-accent/12 text-accent">
-                  <Languages className="size-5" />
+                <div className="rounded-[30px] border border-border bg-white p-5 shadow-panel">
+                  <p className="eyebrow">Audience adaptation</p>
+                  <p className="mt-3 text-sm leading-7 text-[rgba(23,19,41,0.76)]">
+                    Switch between executive, client, engineer, new hire, and clear-language views.
+                  </p>
                 </div>
-                <CardTitle className="mt-4">2. Adapt it for the audience</CardTitle>
-                <CardDescription>
-                  Relay rewrites jargon into plain language and reframes the same idea
-                  for the person hearing it.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-            <Card>
-              <CardHeader>
-                <div className="flex size-12 items-center justify-center rounded-2xl bg-accent/12 text-accent">
-                  <ListChecks className="size-5" />
+                <div className="rounded-[30px] border border-border bg-white p-5 shadow-panel">
+                  <p className="eyebrow">Traceable recap</p>
+                  <p className="mt-3 text-sm leading-7 text-[rgba(23,19,41,0.76)]">
+                    Summary, decisions, and action items stay tied to what was actually said.
+                  </p>
                 </div>
-                <CardTitle className="mt-4">3. Share the async recap</CardTitle>
-                <CardDescription>
-                  Decisions, action items, risks, and follow-ups are grouped into a
-                  clean recap you can export or copy into Slack and email.
-                </CardDescription>
-              </CardHeader>
-            </Card>
+              </div>
+            </div>
+
+            <div className="lg:pt-2">
+              <LandingPreview />
+            </div>
           </div>
         </section>
 
-        <section className="grid gap-6 py-12 lg:grid-cols-[0.9fr_1.1fr]" id="example">
-          <Card className="h-full">
-            <CardHeader>
-              <p className="eyebrow">Before</p>
-              <CardTitle>{DEMO_SESSION.transcript[1].text}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="h-full border-accent/20 bg-accent/8">
-            <CardHeader>
-              <p className="eyebrow text-accent">After</p>
-              <CardTitle>
-                {DEMO_SESSION.transcript[1].audienceVersions.client}
-              </CardTitle>
-              <CardDescription>
-                If someone says something too technical, Relay changes it into something
-                a client, manager, new hire, or non-native speaker can understand.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </section>
-
-        <section className="surface mt-12 overflow-hidden p-8 sm:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <p className="eyebrow">Ready to demo</p>
-              <h2 className="mt-3 section-title">
-                It takes confusing communication and makes it clear, live.
-              </h2>
-              <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                Open the sample workspace and the product explains itself in seconds.
-                No account, no keys, no setup wall.
+        <section className="border-b border-[var(--line-dark)] bg-[var(--bg-light)] py-16 lg:py-20" id="about">
+          <div className="section-shell">
+            <div className="max-w-3xl space-y-4">
+              <p className="inline-flex rounded-full border border-[rgba(124,77,255,0.22)] bg-[rgba(124,77,255,0.12)] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-accent">
+                Values
+              </p>
+              <h2 className="section-title max-w-[10ch]">Turn technical talk into shared understanding.</h2>
+              <p className="max-w-2xl text-base leading-7 text-[rgba(23,19,41,0.76)]">
+                Common Ground is narrow by design. It helps one person explain one thing clearly to different listeners, then turns that conversation into a recap the team can act on.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link href="/app/demo">Try sample demo</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link href="/app/live">Start live session</Link>
-              </Button>
+
+            <div className="mt-10">
+              {valuePillars.map((pillar) => (
+                <div
+                  key={pillar.title}
+                  className="grid gap-5 border-t border-[var(--line-dark)] py-7 lg:grid-cols-[160px_minmax(0,280px)_1fr] lg:py-8"
+                >
+                  <p className="text-4xl font-semibold tracking-[-0.05em] text-accent">
+                    {pillar.number}
+                  </p>
+                  <h3 className="text-4xl font-semibold tracking-[-0.05em] text-foreground">
+                    {pillar.title}
+                  </h3>
+                  <p className="max-w-2xl text-base leading-7 text-[rgba(23,19,41,0.76)]">{pillar.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[var(--line-light)] bg-[var(--bg-dark)] py-16 text-white lg:py-20" id="how-it-works">
+          <div className="absolute hidden" aria-hidden />
+          <div className="section-shell space-y-10">
+            <div className="max-w-3xl space-y-4">
+              <p className="eyebrow text-white/72">How it works</p>
+              <h2 className="section-title text-white">Say it once. Make it make sense.</h2>
+              <p className="max-w-2xl text-base leading-7 text-white/82">
+                The product flow is deliberately simple so the demo lands fast: transcript first, adaptation second, recap third.
+              </p>
+            </div>
+            <div className="grid gap-5 lg:grid-cols-3">
+              {steps.map((step) => (
+                <div
+                  key={step.title}
+                  className="rounded-[32px] border border-[var(--line-light)] bg-[rgba(255,255,255,0.05)] p-6"
+                >
+                  <p className="text-sm font-medium uppercase tracking-[0.18em] text-[var(--purple-soft)]">
+                    {step.number}
+                  </p>
+                  <h3 className="mt-5 text-3xl font-semibold tracking-[-0.05em] text-white">
+                    {step.title}
+                  </h3>
+                  <p className="mt-4 text-sm leading-7 text-white/80">{step.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[var(--line-dark)] py-16 lg:py-20" id="audience-modes">
+          <div className="section-shell">
+            <div className="max-w-3xl space-y-4">
+              <p className="eyebrow">Audience modes</p>
+              <h2 className="section-title">Keep the original meaning visible while adapting the explanation for who is in the room.</h2>
+            </div>
+            <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              {AUDIENCE_OPTIONS.map((mode) => (
+                <div key={mode.id} className="rounded-[30px] border border-border bg-white p-6 shadow-panel">
+                  <p className="inline-flex rounded-full border border-[rgba(124,77,255,0.24)] px-3 py-1 text-[11px] font-medium uppercase tracking-[0.18em] text-accent">
+                    {mode.label}
+                  </p>
+                  <p className="mt-5 text-base font-semibold text-foreground">
+                    {mode.description}
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-[rgba(23,19,41,0.76)]">
+                    Common Ground changes vocabulary, framing, and level of detail instead of making cosmetic wording swaps.
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[var(--line-light)] bg-[var(--bg-dark)] py-16 lg:py-20" id="use-cases">
+          <div className="section-shell grid gap-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-start">
+            <div className="space-y-4">
+              <p className="eyebrow text-white/72">Use cases</p>
+              <h2 className="section-title text-white">Clear communication matters most when different people hear the same meeting in different ways.</h2>
+              <p className="max-w-xl text-base leading-7 text-white/82">
+                Common Ground is most useful in the moments where the room is mixed: technical and non-technical, internal and external, experienced and new.
+              </p>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2">
+              {useCases.map((item, index) => (
+                <div
+                  key={item}
+                  className="rounded-[32px] border border-[var(--line-light)] bg-[rgba(255,255,255,0.05)] p-6"
+                >
+                  <p className="text-sm font-medium uppercase tracking-[0.18em] text-[var(--purple-soft)]">
+                    {String(index + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="mt-5 text-3xl font-semibold tracking-[-0.05em] text-white">
+                    {item}
+                  </h3>
+                  <p className="mt-4 text-sm leading-7 text-white/80">
+                    Use one explanation, then switch the framing so every listener gets the version that makes sense to them.
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-[var(--line-dark)] py-16 lg:py-20" id="demo">
+          <div className="section-shell space-y-6">
+            <div className="max-w-3xl space-y-4">
+              <p className="eyebrow">Interactive demo</p>
+              <h2 className="section-title">The transformation is the product.</h2>
+              <p className="max-w-2xl text-base leading-7 text-[rgba(23,19,41,0.76)]">
+                Switch the scenario. Switch the audience. Watch the same explanation become clearer for the person listening, then review the recap below it.
+              </p>
+            </div>
+            <LandingPreview variant="full" />
+          </div>
+        </section>
+
+        <section className="bg-[var(--bg-dark)] py-16 lg:py-20" id="proof">
+          <div className="section-shell grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+            <div className="space-y-4">
+              <p className="eyebrow text-white/72">Why it matters</p>
+              <h2 className="section-title text-white">The communication problem is obvious. The fix should be too.</h2>
+            </div>
+            <div className="space-y-4">
+              {proofPoints.map((point) => (
+                <div key={point} className="rounded-[28px] border border-[var(--line-light)] bg-[rgba(255,255,255,0.05)] p-5 text-sm leading-7 text-white/82">
+                  {point}
+                </div>
+              ))}
+              <div className="flex flex-wrap gap-3 pt-2">
+                <Button asChild size="lg">
+                  <Link href="/app/demo">Try sample demo</Link>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="border-white/24 bg-white/6 text-white hover:bg-white/12">
+                  <Link href="/app/live">Start live session</Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
       </main>
 
-      <footer className="page-shell flex flex-col gap-4 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
-        <p>Relay turns speech into audience-safe understanding and a usable recap.</p>
-        <div className="flex items-center gap-4">
-          <Link href="/app/demo">Demo</Link>
-          <Link href="/app/live">Live</Link>
-          <Link href="/app/settings">Settings</Link>
+      <footer className="border-t border-[var(--line-dark)] bg-[var(--bg-light)]">
+        <div className="page-shell flex flex-col gap-5 py-8 md:flex-row md:items-center md:justify-between">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-foreground">Made by <a href="https://awaizahmed.com" target="_blank" rel="noreferrer noopener" className="underline underline-offset-4">Team Kanban</a></p>
+            <p className="text-sm text-[rgba(23,19,41,0.76)]">
+              Common Ground turns live speech into audience-ready understanding and a traceable recap.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-4 text-sm font-medium text-[rgba(23,19,41,0.72)]">
+            <Link href="#how-it-works" className="hover:text-foreground">How it works</Link>
+            <Link href="#audience-modes" className="hover:text-foreground">Audience modes</Link>
+            <Link href="#demo" className="hover:text-foreground">Demo</Link>
+            <Link href="/app/live" className="hover:text-foreground">Start live session</Link>
+          </div>
         </div>
       </footer>
     </div>

@@ -7,11 +7,8 @@ describe("PreflightPanel", () => {
     render(
       <PreflightPanel
         audience="client"
-        deviceId="default"
-        devices={[]}
         inputLanguage="en-US"
         onAudienceChange={() => {}}
-        onDeviceChange={() => {}}
         onInputLanguageChange={() => {}}
         onOutputLanguageChange={() => {}}
         onStart={() => {}}

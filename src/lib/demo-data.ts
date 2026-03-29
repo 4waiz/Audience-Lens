@@ -1,5 +1,6 @@
 import type {
   AudienceMode,
+  DemoScenario,
   FollowUpItem,
   SessionAttendee,
   SessionRecord,
@@ -22,117 +23,108 @@ function audienceVersions(
   };
 }
 
-const attendees: SessionAttendee[] = [
+function buildSession(options: {
+  id: string;
+  title: string;
+  subtitle: string;
+  attendees: SessionAttendee[];
+  transcript: TranscriptSegment[];
+  overview: string;
+  keyPoints: SessionRecord["keyPoints"];
+  decisions: SessionRecord["decisions"];
+  actionItems: SessionRecord["actionItems"];
+  risks: SessionRecord["risks"];
+  followUps: FollowUpItem[];
+  audienceRecaps: SessionRecord["audienceRecaps"];
+  createdAt?: string;
+  updatedAt?: string;
+}) {
+  return {
+    id: options.id,
+    title: options.title,
+    subtitle: options.subtitle,
+    createdAt: options.createdAt ?? "2026-03-29T09:00:00.000Z",
+    updatedAt: options.updatedAt ?? "2026-03-29T09:11:00.000Z",
+    durationMs: options.transcript.at(-1)?.endMs ?? 0,
+    kind: "demo" as const,
+    status: "ready" as const,
+    inputLanguage: "en-US" as const,
+    outputLanguage: "en" as const,
+    attendees: options.attendees,
+    transcript: options.transcript,
+    overview: options.overview,
+    keyPoints: options.keyPoints,
+    decisions: options.decisions,
+    actionItems: options.actionItems,
+    risks: options.risks,
+    followUps: options.followUps,
+    audienceRecaps: options.audienceRecaps,
+  };
+}
+
+const clientCallAttendees: SessionAttendee[] = [
   { name: "Maya Chen", role: "Product lead" },
   { name: "Ravi Nair", role: "Engineering lead" },
   { name: "Lena Brooks", role: "Solutions consultant" },
-  { name: "Omar Haddad", role: "Design lead" },
   { name: "Sofia Patel", role: "Support operations" },
-  { name: "Priya Shah", role: "Legal and privacy" },
 ];
 
-const transcript: TranscriptSegment[] = [
+const clientCallTranscript: TranscriptSegment[] = [
   {
-    id: "seg-001",
-    speaker: "Maya Chen",
-    speakerRole: "Product lead",
-    startMs: 0,
-    endMs: 32000,
-    text: "For rollout, I want the feature flag parked at twenty percent until activation clears forty-two and the support macro volume stops flaring. If those two lines settle, we can open the gate for the broader self-serve cohort.",
-    confidence: 0.97,
-    plainEnglish:
-      "Keep the new feature available to 20% of users for now. Open it to more people only when setup completion improves and support requests calm down.",
-    audienceVersions: audienceVersions(
-      "Stay in limited rollout until setup success improves and support load is stable.",
-      "We are releasing this carefully. We will expand only after setup results improve and support demand stays steady.",
-      "Hold the flag at 20% until activation is above 42% and support macro volume normalizes.",
-      "Only a small user group should have the feature for now. We will widen access when setup works better and support noise drops.",
-      "Keep the release small now. Open it to more users only when setup results are better and support questions are lower.",
-    ),
-    glossary: [
-      {
-        term: "Feature flag",
-        meaning: "A switch that turns a feature on for selected users.",
-      },
-      {
-        term: "Support macro",
-        meaning: "A saved reply support agents use to answer common questions.",
-      },
-      {
-        term: "Cohort",
-        meaning: "A specific group of users being measured together.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "The team is limiting rollout until both product adoption and support stability improve.",
-      keepTerms: ["feature flag", "activation", "support"],
-      avoid: ["open the gate", "cohort"],
-      localizedDrafts: {
-        ar: "سنُبقي الإطلاق محدوداً حتى تتحسن نسبة إكمال الإعداد وينخفض ضغط الدعم.",
-        es: "Mantendremos el lanzamiento limitado hasta que mejore la finalización de la configuración y baje la carga de soporte.",
-      },
-    },
-    tags: ["rollout", "decision", "metrics"],
-  },
-  {
-    id: "seg-002",
+    id: "client-001",
     speaker: "Ravi Nair",
     speakerRole: "Engineering lead",
-    startMs: 33000,
-    endMs: 68000,
-    text: "The event pipeline is deduping the late webhook fan-out, but billing still writes phantom retries when a tenant reconnects inside the ninety-second backoff window.",
-    confidence: 0.96,
+    startMs: 0,
+    endMs: 25000,
+    text: "The event pipeline is deduping late webhook fan-out, but billing still writes phantom retries during the ninety-second backoff window.",
+    confidence: 0.98,
     plainEnglish:
-      "We fixed one source of duplicate events, but billing can still create extra retry records if a customer reconnects too quickly.",
+      "We fixed one duplicate-event issue, but billing can still create extra retry attempts during reconnects.",
     audienceVersions: audienceVersions(
-      "One billing edge case still creates duplicate retry records when customers reconnect quickly.",
+      "There is one remaining billing risk during rapid reconnects. It is limited, understood, and being patched.",
       "There is still one backend issue that can briefly create duplicate billing attempts when an account reconnects quickly.",
-      "Webhook fan-out dedupe is working, but billing still emits phantom retries when reconnect happens inside the 90-second backoff window.",
-      "Part of the system is fixed, but billing can still log extra retry attempts if a customer reconnects too fast.",
-      "One system issue is still causing duplicate billing retry records when an account reconnects very quickly.",
+      "The webhook dedupe path is fixed, but billing still emits phantom retries when reconnect happens inside the ninety-second backoff window.",
+      "We fixed one duplicate-event issue, but billing can still create extra retry attempts during reconnects.",
+      "There is one billing problem. If an account reconnects fast, the system may try billing again for a short time.",
     ),
     glossary: [
       {
         term: "Webhook",
-        meaning: "A message one system sends to another when something changes.",
+        meaning: "An automatic message another system sends when something changes.",
       },
       {
         term: "Backoff window",
-        meaning: "A short wait period before the system tries again.",
+        meaning: "A short waiting period before the system retries.",
       },
       {
         term: "Phantom retries",
-        meaning: "Retry records that appear even though the user did not do the action again.",
+        meaning: "Retry records that appear even though the customer did not trigger a new charge.",
       },
     ],
     translationBrief: {
       meaning:
-        "A billing-related technical bug can create duplicate retry records if reconnection happens too soon.",
-      keepTerms: ["billing", "retries", "90-second window"],
+        "A reconnect edge case can create duplicate retry records for a short period, but the team is already patching it.",
+      keepTerms: ["billing", "retries", "ninety-second window"],
       avoid: ["phantom", "fan-out"],
-      localizedDrafts: {
-        ar: "لا تزال هناك مشكلة في الفوترة قد تُنشئ محاولات إعادة مكررة إذا أعاد الحساب الاتصال بسرعة كبيرة.",
-      },
     },
-    tags: ["risk", "billing", "engineering"],
+    tags: ["billing", "risk", "engineering"],
   },
   {
-    id: "seg-003",
+    id: "client-002",
     speaker: "Lena Brooks",
     speakerRole: "Solutions consultant",
-    startMs: 69000,
-    endMs: 96000,
-    text: "If we say 'phantom retries' on the customer call, they will hear 'double charge'. The better translation is 'you may briefly see duplicate draft notices, but final billing stays correct'.",
-    confidence: 0.98,
+    startMs: 26000,
+    endMs: 52000,
+    text: "On the client call, we should translate that as 'you may briefly see duplicate draft notices, but final billing stays correct' so nobody hears 'double charge'.",
+    confidence: 0.99,
     plainEnglish:
-      "Customers may misunderstand the engineering wording. We should tell them they might briefly see duplicate draft notices, but the final bill will still be correct.",
+      "For clients, say they may briefly see duplicate draft notices, but the final bill will still be correct.",
     audienceVersions: audienceVersions(
-      "Customer-facing language should emphasize that billing remains correct even if duplicate draft notices appear briefly.",
-      "Do not use internal engineering terms with customers. Tell them they may briefly see duplicate draft notices, but final billing remains accurate.",
-      "Translate 'phantom retries' into customer-safe billing language to prevent it sounding like duplicate charges.",
-      "The team wants customer wording that explains the effect clearly without scary technical terms.",
-      "Use simple customer language: they may briefly see duplicate draft notices, but the final bill is still correct.",
+      "Client language should protect trust while making clear that final billing stays correct.",
+      "Tell the client they may briefly see duplicate draft notices, but the final bill remains accurate.",
+      "Customer-safe wording should avoid 'double charge' and keep the statement tied to temporary draft notices.",
+      "This is the team rewriting technical wording so clients understand the effect without hearing a worse problem than the one that exists.",
+      "Use simple words: the client may briefly see duplicate draft notices, but the final bill is correct.",
     ),
     glossary: [
       {
@@ -142,471 +134,759 @@ const transcript: TranscriptSegment[] = [
     ],
     translationBrief: {
       meaning:
-        "Customer wording must describe the effect clearly without implying a real double charge.",
+        "The client-facing version must explain the effect clearly without implying a real double charge.",
       keepTerms: ["final billing stays correct"],
-      avoid: ["phantom retries", "double charge"],
-      localizedDrafts: {
-        es: "Puede que vean avisos duplicados de forma temporal, pero la facturación final seguirá siendo correcta.",
-      },
+      avoid: ["double charge", "phantom retries"],
     },
-    tags: ["audience-adaptation", "client-language"],
+    tags: ["client-language", "messaging"],
   },
   {
-    id: "seg-004",
-    speaker: "Omar Haddad",
-    speakerRole: "Design lead",
-    startMs: 97000,
-    endMs: 124000,
-    text: "The launch banner still says 'AI-assisted onboarding orchestration'. Nobody outside this room knows what that means. The interface should just say 'step-by-step setup help'.",
-    confidence: 0.99,
-    plainEnglish:
-      "The product copy is too technical. We should rename it to 'step-by-step setup help'.",
-    audienceVersions: audienceVersions(
-      "Replace vague internal wording with a simple product benefit users understand immediately.",
-      "We should use plain product language instead of internal phrasing. The clearer label is 'step-by-step setup help'.",
-      "Rename the banner copy so it reflects user value rather than internal architecture language.",
-      "The current phrase sounds impressive internally but is hard for new people to understand. Use a direct label instead.",
-      "The current label is too technical. Use 'step-by-step setup help' instead.",
-    ),
-    glossary: [
-      {
-        term: "Onboarding orchestration",
-        meaning: "Internal wording for coordinating setup steps across the product.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "The UI label should describe the user benefit in direct language, not internal terminology.",
-      keepTerms: ["step-by-step setup help"],
-      avoid: ["AI-assisted onboarding orchestration"],
-    },
-    tags: ["copy", "ux", "clarity"],
-  },
-  {
-    id: "seg-005",
+    id: "client-003",
     speaker: "Maya Chen",
     speakerRole: "Product lead",
-    startMs: 125000,
-    endMs: 162000,
-    text: "Decision: we keep the pilot to internal design partners through Tuesday, then open the waitlist batch on Wednesday morning if Ravi's patch lands and support macros are updated.",
+    startMs: 53000,
+    endMs: 76000,
+    text: "Decision: we keep the pilot on the design-partner accounts through Tuesday and widen access Wednesday morning only if Ravi's patch is in and support macros are updated.",
     confidence: 0.99,
     plainEnglish:
-      "Decision: only internal pilot customers will use it through Tuesday. The waitlist rollout starts Wednesday morning if the bug fix and support updates are done.",
+      "Decision: keep access limited through Tuesday. Open it wider on Wednesday only if the fix and support updates are complete.",
     audienceVersions: audienceVersions(
-      "Decision: keep rollout limited through Tuesday, then expand Wednesday morning if the engineering and support prerequisites are complete.",
-      "Decision: the staged release stays limited through Tuesday. We widen access on Wednesday only if the fix and support guidance are ready.",
-      "Decision: design partners only through Tuesday, then release to the waitlist Wednesday if the patch ships and macros are updated.",
-      "The team decided not to broaden access yet. More users get access on Wednesday only if two specific tasks are finished first.",
-      "Decision: keep access limited through Tuesday. Open to the waitlist on Wednesday only if the fix and support updates are complete.",
+      "Decision: stay in controlled rollout through Tuesday, then expand Wednesday if the engineering and support prerequisites are complete.",
+      "We are keeping the release limited through Tuesday and widening it on Wednesday only if the fix and support guidance are ready.",
+      "Pilot stays on design partners through Tuesday. Waitlist expansion starts Wednesday only after the patch ships and macros are updated.",
+      "The team decided not to broaden access yet. Two things must be finished before more customers get it.",
+      "Keep access limited through Tuesday. Open it wider on Wednesday only if the fix and support updates are done.",
     ),
     glossary: [
       {
         term: "Pilot",
-        meaning: "A controlled early release to a small group of users.",
+        meaning: "A limited early release to a small group of users.",
       },
       {
-        term: "Design partners",
-        meaning: "Early customers who test features before wider release.",
+        term: "Support macros",
+        meaning: "Saved support replies used to answer repeated questions quickly.",
       },
     ],
     translationBrief: {
       meaning:
-        "The rollout will stay limited until Tuesday and only expand on Wednesday if two conditions are met.",
+        "The rollout remains limited until the bug fix and support updates are both complete.",
       keepTerms: ["Tuesday", "Wednesday", "patch", "support updates"],
-      avoid: ["waitlist batch"],
+      avoid: ["design partners", "widen access"],
     },
     tags: ["decision", "rollout"],
   },
   {
-    id: "seg-006",
-    speaker: "Ravi Nair",
-    speakerRole: "Engineering lead",
-    startMs: 163000,
-    endMs: 194000,
-    text: "I can ship the retry-window patch by Monday, March 30 at 3:00 PM GST, but only if we stop sneaking schema changes into the connector feed after lunch.",
-    confidence: 0.95,
-    plainEnglish:
-      "I can deliver the bug fix by Monday, March 30 at 3:00 PM GST, but the data format must stay stable for the rest of the day.",
-    audienceVersions: audienceVersions(
-      "Engineering can deliver the bug fix by Monday, March 30 at 3:00 PM GST if input changes stop for the rest of the day.",
-      "The bug fix will be ready by Monday afternoon if the data coming into the system does not change again today.",
-      "Retry-window patch is feasible by Monday, March 30 at 3:00 PM GST if connector feed schema stops changing.",
-      "Ravi can finish the fix by Monday afternoon, but only if the team stops changing the data structure during the day.",
-      "The fix can be ready by Monday afternoon if the incoming data format stays stable.",
-    ),
-    glossary: [
-      {
-        term: "Schema change",
-        meaning: "A change to the structure or format of data.",
-      },
-      {
-        term: "Connector feed",
-        meaning: "The stream of data coming from another integrated system.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "The patch has a clear delivery time, but it depends on keeping the incoming data format unchanged.",
-      keepTerms: ["March 30", "3:00 PM GST", "patch"],
-      avoid: ["sneaking schema changes"],
-    },
-    tags: ["action", "dependency"],
-  },
-  {
-    id: "seg-007",
+    id: "client-004",
     speaker: "Sofia Patel",
     speakerRole: "Support operations",
-    startMs: 195000,
-    endMs: 230000,
-    text: "Support still has beta-era macros telling people to refresh twice and clear cookies. That advice is wrong for the new flow and it is inflating ticket noise.",
-    confidence: 0.98,
+    startMs: 77000,
+    endMs: 102000,
+    text: "Support still has beta-era macros telling customers to refresh twice and clear cookies. That advice is wrong for the new flow and it is inflating ticket volume.",
+    confidence: 0.97,
     plainEnglish:
-      "Support is still using old instructions. Those instructions are wrong now and they are causing extra tickets.",
+      "Support is still using old instructions. They are wrong for the new flow and they are causing extra tickets.",
     audienceVersions: audienceVersions(
-      "Outdated support guidance is creating avoidable ticket volume and needs to be corrected before broader rollout.",
-      "Support articles and replies still include old instructions. Updating them will reduce avoidable confusion.",
-      "Legacy beta macros are producing inaccurate troubleshooting guidance and inflating support volume.",
-      "The support team is using old help text that no longer matches the product. That is causing unnecessary tickets.",
-      "Old support instructions are no longer correct and are creating extra support requests.",
+      "Outdated support guidance is still creating avoidable ticket volume before the wider release.",
+      "Support content still includes old instructions. Updating it will reduce avoidable customer confusion.",
+      "Legacy macros are pushing inaccurate troubleshooting steps and inflating ticket volume.",
+      "Old help text is still being used. It no longer matches the product and creates unnecessary confusion.",
+      "Old support instructions are still live. They are wrong now and create extra support requests.",
     ),
     glossary: [
       {
         term: "Beta-era",
-        meaning: "From an earlier test version of the product.",
+        meaning: "From an older testing version of the product.",
       },
     ],
     translationBrief: {
       meaning:
-        "Support content is outdated and should be corrected before more users get access.",
-      keepTerms: ["support", "macros", "ticket volume"],
-      avoid: ["ticket noise"],
+        "Support responses are outdated and need to be updated before a broader release.",
+      keepTerms: ["support", "ticket volume"],
+      avoid: ["beta-era", "macros"],
     },
     tags: ["support", "risk"],
   },
   {
-    id: "seg-008",
-    speaker: "Lena Brooks",
-    speakerRole: "Solutions consultant",
-    startMs: 231000,
-    endMs: 268000,
-    text: "For the client recap, we should frame this as 'guided setup is rolling out in stages' instead of 'progressive activation with instrumentation gating'. Same idea, less translation tax.",
-    confidence: 0.99,
-    plainEnglish:
-      "For clients, say the feature is rolling out in stages. Do not use internal product language.",
-    audienceVersions: audienceVersions(
-      "Use simple rollout language externally so clients understand the status without translation effort.",
-      "Say 'guided setup is rolling out in stages'. Avoid internal rollout jargon in client communication.",
-      "Replace internal launch jargon with a customer-safe status explanation in recap copy.",
-      "Lena is rewriting the message so people outside the team can understand the rollout immediately.",
-      "Use simple wording for clients: the feature is rolling out in stages.",
-    ),
-    glossary: [
-      {
-        term: "Instrumentation gating",
-        meaning: "Internal jargon for releasing only when tracking and metrics are ready.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "Client-facing recap should use plain release wording, not internal launch terminology.",
-      keepTerms: ["guided setup", "rolling out in stages"],
-      avoid: ["instrumentation gating", "translation tax"],
-    },
-    tags: ["audience-adaptation", "client-language"],
-  },
-  {
-    id: "seg-009",
+    id: "client-005",
     speaker: "Maya Chen",
     speakerRole: "Product lead",
-    startMs: 269000,
-    endMs: 306000,
-    text: "Big risk: the analytics dashboard is lagging by about twelve minutes, so if a judge or customer asks whether onboarding completion improved live, we may not have trustworthy numbers in the room.",
-    confidence: 0.97,
-    plainEnglish:
-      "Main risk: analytics are delayed by about 12 minutes, so we may not have reliable live numbers during the launch conversation.",
-    audienceVersions: audienceVersions(
-      "Primary risk: delayed analytics could weaken live reporting confidence during launch conversations.",
-      "Risk: live performance numbers may be delayed, so we should not overstate results in real time.",
-      "Risk: dashboard latency is around 12 minutes, which makes live activation reporting unreliable.",
-      "The main blocker is that the dashboard updates late, so the team may not have accurate numbers during the meeting.",
-      "Main risk: the dashboard is about 12 minutes behind, so live numbers may not be reliable.",
-    ),
-    glossary: [
-      {
-        term: "Dashboard lag",
-        meaning: "The reporting screen updates later than the real events happen.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "Analytics data is delayed, so real-time reporting should be presented carefully.",
-      keepTerms: ["12 minutes", "analytics", "live numbers"],
-      avoid: ["in the room"],
-    },
-    tags: ["risk", "analytics"],
-  },
-  {
-    id: "seg-010",
-    speaker: "Omar Haddad",
-    speakerRole: "Design lead",
-    startMs: 307000,
-    endMs: 340000,
-    text: "I will rewrite the launch note in two versions by Monday, March 30 at 6:00 PM GST: one for admins and one for end users, because the current copy assumes everyone knows what a workspace-level policy is.",
-    confidence: 0.98,
-    plainEnglish:
-      "I will rewrite the launch message by Monday evening in two versions: one for admins and one for end users.",
-    audienceVersions: audienceVersions(
-      "Design will deliver two audience-specific launch notes by Monday evening so the message matches who is reading it.",
-      "You will get clearer launch notes for both admins and end users by Monday evening.",
-      "Two audience-specific launch-note variants will be ready by Monday, March 30 at 6:00 PM GST.",
-      "Omar is creating two versions of the message because different readers need different context.",
-      "Two clearer message versions will be ready by Monday evening: one for admins and one for end users.",
-    ),
-    glossary: [
-      {
-        term: "Workspace-level policy",
-        meaning: "A setting applied to an entire team or account, not one individual user.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "The launch communication will be split by audience so each group gets the right level of context.",
-      keepTerms: ["admins", "end users", "March 30", "6:00 PM GST"],
-      avoid: ["workspace-level policy"],
-    },
-    tags: ["action", "copy"],
-  },
-  {
-    id: "seg-011",
-    speaker: "Priya Shah",
-    speakerRole: "Legal and privacy",
-    startMs: 341000,
-    endMs: 378000,
-    text: "Before we broaden access, I need a final pass on the transcript retention line in the privacy FAQ. The current wording sounds like we store raw meeting audio forever, which we do not.",
+    startMs: 103000,
+    endMs: 129000,
+    text: "For the recap, keep the original wording visible, then show the client-safe version next to it so account teams can trust what changed and why.",
     confidence: 0.99,
     plainEnglish:
-      "Before launch expands, legal needs to fix the privacy FAQ because it currently sounds like meeting audio is kept forever.",
+      "In the recap, keep the original wording visible and show the client-safe rewrite next to it so people can verify the change.",
     audienceVersions: audienceVersions(
-      "Privacy wording needs final legal review before expansion so we do not overstate data retention.",
-      "Before broader rollout, we need clearer privacy wording so customers understand what is and is not stored.",
-      "Legal needs to revise the retention copy because the current FAQ implies indefinite raw-audio storage.",
-      "Priya needs to update the privacy explanation before launch so it matches what the product actually stores.",
-      "The privacy FAQ needs one final review before launch because the current wording is misleading.",
+      "The recap should preserve source wording and show exactly how it was reframed for the audience.",
+      "Keep the original wording beside the client-safe version so account teams can see the difference clearly.",
+      "Recap output should preserve transcript provenance while exposing the rewritten customer-safe variant.",
+      "The recap should show both versions so new people can learn how the message changed.",
+      "Show the original words and the simpler version together so people can compare them easily.",
     ),
     glossary: [
       {
-        term: "Retention",
-        meaning: "How long data is kept before it is deleted.",
-      },
-      {
-        term: "Privacy FAQ",
-        meaning: "A help page that answers common data and privacy questions.",
+        term: "Client-safe",
+        meaning: "Clear wording that is accurate and appropriate for customers.",
       },
     ],
     translationBrief: {
       meaning:
-        "The privacy FAQ needs clearer wording so it does not imply permanent raw-audio storage.",
-      keepTerms: ["privacy FAQ", "retention", "raw meeting audio"],
-      avoid: ["forever"],
+        "The recap must keep the source wording visible while showing the audience-specific rewrite beside it.",
+      keepTerms: ["original wording", "client-safe version"],
+      avoid: ["provenance"],
     },
-    tags: ["risk", "privacy"],
-  },
-  {
-    id: "seg-012",
-    speaker: "Maya Chen",
-    speakerRole: "Product lead",
-    startMs: 379000,
-    endMs: 418000,
-    text: "Good. Decisions are staged rollout through Tuesday, patch by Monday, support macros updated, and client-safe copy tomorrow. If the dashboard lag is still there by Tuesday, March 31 at noon GST, we call that out instead of bluffing.",
-    confidence: 0.97,
-    plainEnglish:
-      "Summary: keep the rollout staged, deliver the patch Monday, update support and client messaging, and be honest if analytics are still delayed by Tuesday noon.",
-    audienceVersions: audienceVersions(
-      "Closeout: maintain the staged launch, complete the core fixes, and communicate any analytics limitation transparently.",
-      "The plan is set: staged launch, fix the issue, update support and customer wording, and be transparent about any reporting delay.",
-      "Closeout: staged rollout stays in place, patch lands Monday, support macros and client copy update, and analytics lag will be disclosed if it persists past Tuesday, March 31 at noon GST.",
-      "Maya is restating the final plan and making clear that the team should be honest about the analytics gap if it is not fixed in time.",
-      "Final plan: staged rollout, patch on Monday, support and copy updates, and clear communication if analytics are still delayed on Tuesday.",
-    ),
-    glossary: [
-      {
-        term: "Client-safe copy",
-        meaning: "Wording that is accurate and easy for customers to understand.",
-      },
-    ],
-    translationBrief: {
-      meaning:
-        "The final plan is confirmed, and the team agrees to disclose analytics limitations instead of improvising around them.",
-      keepTerms: ["Tuesday, March 31", "noon GST", "analytics"],
-      avoid: ["bluffing"],
-    },
-    tags: ["decision", "closeout"],
+    tags: ["recap", "traceability"],
   },
 ];
 
-const followUps: FollowUpItem[] = [
-  {
-    id: "followup-analytics",
-    title: "Confirm analytics freshness before broader rollout",
-    body: "Check whether dashboard latency is still around 12 minutes before the Tuesday noon readiness call.",
-    sourceSegmentIds: ["seg-009", "seg-012"],
-    confidence: "High confidence",
-    owner: "Maya Chen",
-  },
-  {
-    id: "followup-privacy",
-    title: "Approve final privacy FAQ language",
-    body: "Legal needs to confirm the transcript-retention wording before rollout expands beyond design partners.",
-    sourceSegmentIds: ["seg-011"],
-    confidence: "High confidence",
-    owner: "Priya Shah",
-  },
-];
-
-export const DEMO_SESSION: SessionRecord = {
-  id: "demo-guided-setup-sync",
-  title: "Guided Setup launch sync",
-  subtitle: "Cross-functional rollout review with product, engineering, support, and legal",
-  createdAt: "2026-03-28T08:30:00.000Z",
-  updatedAt: "2026-03-28T09:06:00.000Z",
-  durationMs: 11 * 60 * 1000 + 48 * 1000,
-  kind: "demo",
-  status: "ready",
-  inputLanguage: "en-US",
-  outputLanguage: "en",
-  attendees,
-  transcript,
+const clientCallSession = buildSession({
+  id: "demo-client-call",
+  title: "Engineering update for a client call",
+  subtitle: "Backend billing issue translated into customer-safe language for the room",
+  attendees: clientCallAttendees,
+  transcript: clientCallTranscript,
   overview:
-    "The team aligned on a cautious staged rollout for Guided Setup. They agreed to keep exposure at 20% until adoption and support metrics stabilize, fix a billing retry edge case, rewrite customer-facing language in simpler terms, update outdated support guidance, and review privacy wording before expanding access. The main blocker is analytics lag, which could make live reporting unreliable during launch conversations.",
+    "The team aligned on how to explain a billing retry edge case without alarming the client. They kept the rollout limited through Tuesday, agreed to update support macros before expanding access, and insisted that the recap keep both the original wording and the adapted explanation visible.",
   keyPoints: [
     {
-      id: "key-rollout-guardrail",
-      title: "Rollout stays limited until the core signals improve",
-      body: "The feature remains at 20% exposure until activation improves and support volume settles.",
-      sourceSegmentIds: ["seg-001", "seg-005"],
+      id: "client-key-risk",
+      title: "One billing edge case remains",
+      body: "A reconnect inside the retry window can still create duplicate draft retry records for a short period.",
+      sourceSegmentIds: ["client-001"],
       confidence: "High confidence",
     },
     {
-      id: "key-language-shift",
-      title: "The team actively translated internal jargon into audience-safe language",
-      body: "Engineering and internal launch terminology were rewritten into wording clients and end users can understand immediately.",
-      sourceSegmentIds: ["seg-003", "seg-004", "seg-008"],
+      id: "client-key-language",
+      title: "The team rewrote the issue for a client audience",
+      body: "They replaced internal engineering terms with a simpler explanation that preserves trust and accuracy.",
+      sourceSegmentIds: ["client-002"],
       confidence: "High confidence",
     },
     {
-      id: "key-support-readiness",
-      title: "Support content is part of launch readiness, not an afterthought",
-      body: "Legacy macros are outdated and are currently driving avoidable ticket volume.",
-      sourceSegmentIds: ["seg-007"],
-      confidence: "High confidence",
-    },
-    {
-      id: "key-live-risk",
-      title: "Analytics freshness is the main demo and launch risk",
-      body: "Dashboard latency could leave the team without trustworthy live numbers in front of judges or customers.",
-      sourceSegmentIds: ["seg-009", "seg-012"],
+      id: "client-key-proof",
+      title: "The recap must preserve source wording",
+      body: "The original explanation stays visible next to the audience-safe rewrite so the change is traceable.",
+      sourceSegmentIds: ["client-005"],
       confidence: "High confidence",
     },
   ],
   decisions: [
     {
-      id: "decision-limited-rollout",
-      title: "Keep rollout at 20% until adoption and support stabilize",
-      body: "The team will not broaden access until activation clears the current threshold and support demand calms down.",
-      sourceSegmentIds: ["seg-001"],
+      id: "client-decision-rollout",
+      title: "Keep access limited through Tuesday",
+      body: "The rollout stays on design-partner accounts until the patch and support updates are complete.",
+      sourceSegmentIds: ["client-003"],
       confidence: "High confidence",
-      impact: "Reduces the risk of scaling confusion and support load before the launch is ready.",
-    },
-    {
-      id: "decision-partner-through-tuesday",
-      title: "Keep the pilot limited through Tuesday",
-      body: "Only design-partner accounts stay in the rollout through Tuesday. Waitlist users open Wednesday morning if the patch and support updates are complete.",
-      sourceSegmentIds: ["seg-005"],
-      confidence: "High confidence",
-      impact: "Gives engineering and support a fixed window to stabilize the experience before expanding access.",
-    },
-    {
-      id: "decision-client-language",
-      title: "Use plain customer language in launch communication",
-      body: "External messaging will say Guided Setup is rolling out in stages, not use internal terminology like instrumentation gating or phantom retries.",
-      sourceSegmentIds: ["seg-003", "seg-004", "seg-008"],
-      confidence: "High confidence",
-      impact: "Makes launch messaging clearer for customers, executives, and judges.",
+      impact: "This keeps the issue contained while engineering and support finish the release blockers.",
     },
   ],
   actionItems: [
     {
-      id: "action-ravi-patch",
-      title: "Ship retry-window patch",
-      body: "Deliver the billing retry fix and keep connector-feed schema stable long enough to ship it safely.",
-      sourceSegmentIds: ["seg-002", "seg-006"],
+      id: "client-action-patch",
+      title: "Ship the retry-window patch",
+      body: "Close the reconnect billing edge case before Wednesday morning.",
+      sourceSegmentIds: ["client-001", "client-003"],
       confidence: "High confidence",
       owner: "Ravi Nair",
-      dueDate: "Mar 30, 2026, 3:00 PM GST",
+      dueDate: "Tue 10:00 AM GST",
       status: "Open",
     },
     {
-      id: "action-sofia-macros",
+      id: "client-action-support",
       title: "Replace outdated support macros",
-      body: "Remove beta-era troubleshooting advice and align support messaging with the current Guided Setup flow.",
-      sourceSegmentIds: ["seg-007"],
+      body: "Remove instructions that no longer match the current billing flow.",
+      sourceSegmentIds: ["client-004"],
       confidence: "High confidence",
       owner: "Sofia Patel",
-      dueDate: "Mar 31, 2026, 10:00 AM GST",
-      status: "Open",
-    },
-    {
-      id: "action-omar-copy",
-      title: "Write audience-specific launch notes",
-      body: "Prepare one launch note for admins and one for end users, both in plain language.",
-      sourceSegmentIds: ["seg-004", "seg-010"],
-      confidence: "High confidence",
-      owner: "Omar Haddad",
-      dueDate: "Mar 30, 2026, 6:00 PM GST",
-      status: "Planned",
-    },
-    {
-      id: "action-priya-privacy",
-      title: "Approve final privacy FAQ language",
-      body: "Revise the transcript-retention wording so it clearly reflects actual storage behavior.",
-      sourceSegmentIds: ["seg-011"],
-      confidence: "High confidence",
-      owner: "Priya Shah",
-      dueDate: "Mar 31, 2026, 12:00 PM GST",
+      dueDate: "Tue 4:00 PM GST",
       status: "Open",
     },
   ],
   risks: [
     {
-      id: "risk-analytics-lag",
-      title: "Analytics data is delayed by about 12 minutes",
-      body: "The team may not have trustworthy real-time completion numbers during launch demos or customer conversations.",
-      sourceSegmentIds: ["seg-009", "seg-012"],
+      id: "client-risk-language",
+      title: "Technical wording could sound worse than the real issue",
+      body: "Using phrases like 'phantom retries' on a client call can be misheard as duplicate charges.",
+      sourceSegmentIds: ["client-001", "client-002"],
       confidence: "High confidence",
       severity: "High",
     },
+  ],
+  followUps: [
     {
-      id: "risk-privacy-wording",
-      title: "Privacy FAQ wording may overstate raw-audio retention",
-      body: "If the copy is not fixed before rollout expands, customers may misunderstand what data is stored.",
-      sourceSegmentIds: ["seg-011"],
+      id: "client-followup-recap",
+      title: "Keep original and adapted wording side by side in the recap",
+      body: "Account teams should be able to verify exactly how the explanation changed before sharing it onward.",
+      sourceSegmentIds: ["client-005"],
+      confidence: "High confidence",
+      owner: "Maya Chen",
+    },
+  ],
+  audienceRecaps: {
+    executive:
+      "There is one contained billing risk during fast reconnects. The team is holding rollout through Tuesday, patching the issue, updating support guidance, and using traceable client-safe messaging.",
+    client:
+      "There is one temporary backend billing issue that can show duplicate draft notices during a fast reconnect. Final billing stays correct, and the team is patching the issue before the broader release.",
+    engineer:
+      "Webhook dedupe is fixed, but billing still emits phantom retries when reconnect happens inside the ninety-second backoff window. Rollout remains limited until the patch and macro cleanup land.",
+    newHire:
+      "The team is preparing for a client conversation. They are turning technical billing language into something safer and easier to understand, while keeping the rollout limited until the fix is ready.",
+    nonNative:
+      "There is one billing issue during fast reconnects. The team is fixing it, keeping the rollout small, and using simpler client wording in the recap.",
+  },
+});
+
+const onboardingAttendees: SessionAttendee[] = [
+  { name: "Nadia Rahman", role: "Product manager" },
+  { name: "Jon Park", role: "Design lead" },
+  { name: "Riya Desai", role: "Solutions engineer" },
+  { name: "Alex Rivera", role: "New hire, customer success" },
+];
+
+const onboardingTranscript: TranscriptSegment[] = [
+  {
+    id: "onboard-001",
+    speaker: "Nadia Rahman",
+    speakerRole: "Product manager",
+    startMs: 0,
+    endMs: 22000,
+    text: "Common Ground keeps the live transcript visible on the left, then rewrites the same explanation for whoever is in the room without hiding the original source.",
+    confidence: 0.99,
+    plainEnglish:
+      "Common Ground shows the original transcript and a clearer version for the selected audience at the same time.",
+    audienceVersions: audienceVersions(
+      "The product preserves source truth while making the explanation immediately usable for different listeners.",
+      "The product shows the original explanation and a clearer version side by side so every listener can follow it.",
+      "The UI keeps transcript provenance visible while rendering audience-specific rewrites in parallel.",
+      "You can always see the original words and the adapted version together, so you learn both what was said and how it changed.",
+      "The product shows the original words and a clearer version together.",
+    ),
+    glossary: [
+      {
+        term: "Original source",
+        meaning: "The exact wording that was spoken before any rewrite happens.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "The product keeps the original wording visible while also showing an audience-specific rewrite.",
+      keepTerms: ["live transcript", "original source"],
+      avoid: ["provenance"],
+    },
+    tags: ["product", "overview"],
+  },
+  {
+    id: "onboard-002",
+    speaker: "Riya Desai",
+    speakerRole: "Solutions engineer",
+    startMs: 23000,
+    endMs: 49000,
+    text: "Audience modes are not tone presets. Executive mode compresses to outcome and risk, while new-hire mode adds context, expands shorthand, and slows the explanation down.",
+    confidence: 0.98,
+    plainEnglish:
+      "Audience modes change the explanation itself. Executive mode gets shorter, and new-hire mode adds more background and context.",
+    audienceVersions: audienceVersions(
+      "Each audience mode changes the level of detail and framing, not just the style of the sentence.",
+      "Audience modes are built to match what each listener needs, not just make the wording sound nicer.",
+      "Modes alter information density, jargon retention, and framing rather than only changing tone.",
+      "This feature is important because it explains the same idea differently for people with different context.",
+      "Audience modes change detail and wording. They do not only change tone.",
+    ),
+    glossary: [
+      {
+        term: "Tone preset",
+        meaning: "A simple style change that does not change the actual content.",
+      },
+      {
+        term: "Shorthand",
+        meaning: "Short internal wording that only experienced teammates understand quickly.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "Each audience mode changes the amount of detail and context, not only the sentence style.",
+      keepTerms: ["executive mode", "new-hire mode"],
+      avoid: ["tone preset", "compresses"],
+    },
+    tags: ["audience-modes", "product"],
+  },
+  {
+    id: "onboard-003",
+    speaker: "Jon Park",
+    speakerRole: "Design lead",
+    startMs: 50000,
+    endMs: 74000,
+    text: "The interface has to explain itself in one pass, so the first screen shows transcript, adaptation, and recap at once instead of making people click through setup before they understand the product.",
+    confidence: 0.97,
+    plainEnglish:
+      "The first screen should show the transcript, the adapted explanation, and the recap together so people understand the product immediately.",
+    audienceVersions: audienceVersions(
+      "The product must communicate value instantly without relying on onboarding friction.",
+      "The first screen should make the product clear right away instead of making users go through setup first.",
+      "The IA prioritizes immediate value by colocating transcript, adaptation, and recap in the first viewport.",
+      "This helps a new person understand the whole workflow at a glance.",
+      "Show the main parts on the first screen so people understand the product quickly.",
+    ),
+    glossary: [
+      {
+        term: "IA",
+        meaning: "Information architecture, or how the interface is organized.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "The first screen should explain the product immediately by showing the core workflow together.",
+      keepTerms: ["transcript", "adaptation", "recap"],
+      avoid: ["IA", "one pass"],
+    },
+    tags: ["design", "demo"],
+  },
+  {
+    id: "onboard-004",
+    speaker: "Nadia Rahman",
+    speakerRole: "Product manager",
+    startMs: 75000,
+    endMs: 100000,
+    text: "Decision: every onboarding demo should start with the sample scenario, then switch one tab to show how the same message changes for executives, clients, engineers, and new hires.",
+    confidence: 0.99,
+    plainEnglish:
+      "Decision: start every onboarding demo with the sample scenario and switch tabs to show how one message changes for different audiences.",
+    audienceVersions: audienceVersions(
+      "Decision: the demo flow should reveal differentiation immediately by switching audience tabs on the same message.",
+      "We should begin with the sample scenario and then show how one message changes for each audience.",
+      "Demo flow standardizes on scenario-first, then audience-tab switching to showcase output differences on the same source text.",
+      "This gives new teammates a repeatable way to explain the product clearly.",
+      "Start with the sample scenario, then change the audience tab to show the different versions.",
+    ),
+    glossary: [
+      {
+        term: "Scenario-first",
+        meaning: "Start with a ready-made example instead of asking the user to set everything up first.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "The standard demo should begin with a sample scenario and then show audience switching on the same message.",
+      keepTerms: ["sample scenario", "audience tabs"],
+      avoid: ["scenario-first", "standardizes"],
+    },
+    tags: ["decision", "onboarding"],
+  },
+  {
+    id: "onboard-005",
+    speaker: "Alex Rivera",
+    speakerRole: "New hire, customer success",
+    startMs: 101000,
+    endMs: 126000,
+    text: "That side-by-side view helps because I can see the exact sentence, the simpler explanation, and the recap without guessing what the AI changed on my behalf.",
+    confidence: 0.98,
+    plainEnglish:
+      "The side-by-side view is useful because it shows the original sentence, the simpler rewrite, and the recap together.",
+    audienceVersions: audienceVersions(
+      "The side-by-side model builds trust because the rewrite remains reviewable.",
+      "Seeing the original sentence next to the simpler rewrite makes the product feel reliable and easy to trust.",
+      "The transcript-plus-rewrite layout reduces ambiguity about what the model changed.",
+      "This is useful for a new hire because it removes guesswork and teaches the product at the same time.",
+      "The side-by-side view is easier to trust because you can compare both versions.",
+    ),
+    glossary: [
+      {
+        term: "Side-by-side view",
+        meaning: "A layout that shows the original wording and the adapted wording next to each other.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "The side-by-side view makes the rewrite easier to trust because the original sentence stays visible.",
+      keepTerms: ["side-by-side view", "original sentence"],
+      avoid: ["on my behalf"],
+    },
+    tags: ["trust", "product"],
+  },
+];
+
+const onboardingSession = buildSession({
+  id: "demo-new-hire-onboarding",
+  title: "Product explanation for a new hire",
+  subtitle: "Internal onboarding walkthrough of how Common Ground works and why the side-by-side view matters",
+  attendees: onboardingAttendees,
+  transcript: onboardingTranscript,
+  overview:
+    "The team aligned on how to explain Common Ground to new teammates. They emphasized that the product keeps the original transcript visible, changes the explanation based on audience mode, and should demo its value on the first screen without setup friction.",
+  keyPoints: [
+    {
+      id: "onboard-key-truth",
+      title: "The original wording always stays visible",
+      body: "The transcript remains on screen so every adapted explanation can be reviewed against what was actually said.",
+      sourceSegmentIds: ["onboard-001", "onboard-005"],
+      confidence: "High confidence",
+    },
+    {
+      id: "onboard-key-modes",
+      title: "Audience modes change content, not just tone",
+      body: "Executive and new-hire modes intentionally change detail, framing, and context.",
+      sourceSegmentIds: ["onboard-002"],
+      confidence: "High confidence",
+    },
+    {
+      id: "onboard-key-demo",
+      title: "The first screen must explain the product",
+      body: "Transcript, adaptation, and recap should be visible together before any setup wall appears.",
+      sourceSegmentIds: ["onboard-003", "onboard-004"],
+      confidence: "High confidence",
+    },
+  ],
+  decisions: [
+    {
+      id: "onboard-decision-demo",
+      title: "Start onboarding demos with the sample scenario",
+      body: "Every walkthrough should begin with a ready-made scenario and then show the audience tab switch on the same message.",
+      sourceSegmentIds: ["onboard-004"],
+      confidence: "High confidence",
+      impact: "New teammates see the differentiator quickly without needing setup or product context first.",
+    },
+  ],
+  actionItems: [
+    {
+      id: "onboard-action-script",
+      title: "Document the standard onboarding demo script",
+      body: "Make the scenario-first, tab-switch walkthrough the default way to explain the product internally.",
+      sourceSegmentIds: ["onboard-004"],
+      confidence: "High confidence",
+      owner: "Nadia Rahman",
+      dueDate: "Wed 11:00 AM GST",
+      status: "Planned",
+    },
+  ],
+  risks: [
+    {
+      id: "onboard-risk-setup",
+      title: "Setup friction can hide the product value",
+      body: "If the first screen does not show transcript, adaptation, and recap together, new users may miss what makes the product different.",
+      sourceSegmentIds: ["onboard-003"],
       confidence: "High confidence",
       severity: "Medium",
     },
   ],
-  followUps,
+  followUps: [
+    {
+      id: "onboard-followup-proof",
+      title: "Keep reinforcing the side-by-side proof model",
+      body: "Use examples that show the original wording and the adapted explanation together in every onboarding flow.",
+      sourceSegmentIds: ["onboard-005"],
+      confidence: "High confidence",
+      owner: "Jon Park",
+    },
+  ],
   audienceRecaps: {
     executive:
-      "Guided Setup stays in a controlled rollout through Tuesday. The team has clear owners for the billing patch, support updates, launch copy, and privacy review. The main leadership risk is a 12-minute analytics delay that could weaken live reporting confidence during launch conversations.",
+      "Common Ground's core value is immediate comprehension without losing source truth. Onboarding should show the transcript, rewrite, and recap together so differentiation lands in seconds.",
     client:
-      "Guided Setup is rolling out in stages. The team is fixing one billing edge case, updating support guidance, and simplifying launch communication so customers see accurate, clearer messaging before broader access opens.",
+      "The product listens to a meeting, shows the original wording, and rewrites the explanation for whoever is listening. That makes handoffs and client conversations clearer without hiding what was actually said.",
     engineer:
-      "The rollout remains at 20% while the team tracks activation and support volume. Billing still emits phantom retries if reconnect happens inside the 90-second backoff window, support macros need cleanup, and dashboard latency remains the largest launch risk.",
+      "The product keeps transcript provenance visible while applying audience-specific rewrites with different information density and framing. The preferred demo flow is scenario-first with tab switching on a shared source message.",
     newHire:
-      "The team is preparing a careful launch for Guided Setup. They want to expand only after the experience is more stable, the bug fix is ready, customer wording is simpler, and support and privacy updates are complete.",
+      "Common Ground helps teams explain the same idea to different listeners without losing the original meaning. You can always compare the exact sentence with the adapted version and the recap.",
     nonNative:
-      "The team is releasing Guided Setup slowly. They will fix one billing issue, update support messages, simplify customer wording, and review privacy text before giving access to more users.",
+      "The product shows the original words and a clearer version together. Different audience modes change detail and context so the message is easier to understand.",
   },
-};
+});
 
-export const DEMO_SEGMENT_STREAM_ORDER = transcript.map((segment) => segment.id);
+const standupAttendees: SessionAttendee[] = [
+  { name: "Samir Khan", role: "Platform lead" },
+  { name: "Elena Costa", role: "Infra engineer" },
+  { name: "Marco Silva", role: "QA lead" },
+];
+
+const standupTranscript: TranscriptSegment[] = [
+  {
+    id: "status-001",
+    speaker: "Samir Khan",
+    speakerRole: "Platform lead",
+    startMs: 0,
+    endMs: 22000,
+    text: "The ingestion worker caught up overnight, but the EU queue still spikes when the OCR bundle warms cold containers after a quiet period.",
+    confidence: 0.97,
+    plainEnglish:
+      "The backlog is cleared, but the Europe queue still gets slower when the OCR service starts again after being idle.",
+    audienceVersions: audienceVersions(
+      "The backlog is under control, but one regional performance spike still needs attention after idle periods.",
+      "The system recovered overnight, but there is still one regional slowdown when a service starts again after being idle.",
+      "Ingestion is caught up, but EU queue latency still spikes while the OCR bundle warms cold containers after idle.",
+      "The main queue is healthy again, but one Europe-specific startup slowdown still remains.",
+      "The backlog is gone, but the Europe queue still gets slower when the OCR service starts after being idle.",
+    ),
+    glossary: [
+      {
+        term: "Cold containers",
+        meaning: "Service instances that were not running and need time to start again.",
+      },
+      {
+        term: "OCR bundle",
+        meaning: "The part of the system that reads text from images or documents.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "The backlog is cleared, but a regional startup slowdown still causes queue spikes after idle periods.",
+      keepTerms: ["EU queue", "OCR"],
+      avoid: ["cold containers", "bundle warms"],
+    },
+    tags: ["latency", "queue", "infra"],
+  },
+  {
+    id: "status-002",
+    speaker: "Elena Costa",
+    speakerRole: "Infra engineer",
+    startMs: 23000,
+    endMs: 49000,
+    text: "I added a pre-warm job every fifteen minutes, but we should keep the rollout capped at fifty percent until the alert noise drops below five pages in a shift.",
+    confidence: 0.98,
+    plainEnglish:
+      "I added a job to keep the service warm, but we should keep the rollout at 50% until alert volume drops below five pages per shift.",
+    audienceVersions: audienceVersions(
+      "The mitigation is in place, but the rollout should stay capped until the operational risk drops further.",
+      "We added a fix to reduce the slowdown, but we should keep the release limited until alert volume is lower.",
+      "A fifteen-minute pre-warm is live, but rollout should remain at 50% until pages fall below five per shift.",
+      "A preventive fix is already running, but the team still wants proof that alerts stay low before expanding access.",
+      "A new job is running to reduce the slowdown, but keep the rollout at 50% until alerts are lower.",
+    ),
+    glossary: [
+      {
+        term: "Pre-warm job",
+        meaning: "An automated task that keeps a service ready so it does not start cold.",
+      },
+      {
+        term: "Pages",
+        meaning: "Urgent alert notifications sent to the on-call team.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "A mitigation is active, but rollout should stay limited until alert volume drops.",
+      keepTerms: ["fifteen minutes", "fifty percent", "five pages"],
+      avoid: ["capped", "shift"],
+    },
+    tags: ["mitigation", "decision"],
+  },
+  {
+    id: "status-003",
+    speaker: "Marco Silva",
+    speakerRole: "QA lead",
+    startMs: 50000,
+    endMs: 73000,
+    text: "For the release note, please say 'documents may process a little slower after long idle periods in Europe' instead of describing container warm-up behavior.",
+    confidence: 0.99,
+    plainEnglish:
+      "In the release note, say documents may process a little slower in Europe after long idle periods instead of using internal infrastructure language.",
+    audienceVersions: audienceVersions(
+      "External wording should describe user impact, not internal infrastructure details.",
+      "Say documents may be a little slower in Europe after quiet periods instead of using technical terms.",
+      "Release notes should map infra behavior to user-visible latency, not mention container warm-up.",
+      "This is the team translating technical cause into a simpler customer-facing explanation.",
+      "Use simple release note wording about slower document processing in Europe after quiet periods.",
+    ),
+    glossary: [
+      {
+        term: "Container warm-up",
+        meaning: "The time a service needs to start before it can process requests at full speed.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "Release notes should explain the user impact in simple terms rather than describing the infrastructure behavior.",
+      keepTerms: ["documents", "Europe", "slower"],
+      avoid: ["container warm-up"],
+    },
+    tags: ["release-note", "communication"],
+  },
+  {
+    id: "status-004",
+    speaker: "Samir Khan",
+    speakerRole: "Platform lead",
+    startMs: 74000,
+    endMs: 98000,
+    text: "Decision: stay at fifty percent traffic today, review the alert count at 4:00 PM GST, and only open full traffic if the queue remains flat.",
+    confidence: 0.99,
+    plainEnglish:
+      "Decision: stay at 50% traffic today, review alerts at 4:00 PM GST, and move to full traffic only if the queue stays stable.",
+    audienceVersions: audienceVersions(
+      "Decision: keep today's rollout controlled and move to full traffic only if stability holds through the afternoon review.",
+      "We are keeping traffic limited today and will expand only if the queue stays stable at the afternoon check-in.",
+      "Stay at 50% traffic, review at 4:00 PM GST, and only open full traffic if queue depth stays flat.",
+      "The team is using a checkpoint before widening traffic so they can confirm the mitigation is working.",
+      "Keep traffic at 50% today. Check alerts at 4:00 PM GST. Open full traffic only if the queue stays stable.",
+    ),
+    glossary: [
+      {
+        term: "Traffic",
+        meaning: "The share of live usage currently being sent to the system.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "The rollout remains limited until the team confirms queue stability during the afternoon review.",
+      keepTerms: ["50%", "4:00 PM GST", "full traffic"],
+      avoid: ["flat"],
+    },
+    tags: ["decision", "rollout"],
+  },
+  {
+    id: "status-005",
+    speaker: "Elena Costa",
+    speakerRole: "Infra engineer",
+    startMs: 99000,
+    endMs: 123000,
+    text: "Action item: I will post a simpler status line in the incident room after lunch so support and regional ops are not translating platform shorthand for everyone else.",
+    confidence: 0.98,
+    plainEnglish:
+      "Action item: I will post a simpler status update after lunch so support and regional operations do not have to translate platform shorthand.",
+    audienceVersions: audienceVersions(
+      "Action: publish a clearer status update so downstream teams can act without translation overhead.",
+      "I will send a simpler update after lunch so support and regional teams do not need to decode platform language.",
+      "I will replace platform shorthand with a plain-language incident-room update after lunch.",
+      "This keeps the whole team aligned because support and ops get a version that is easier to understand quickly.",
+      "I will post a simpler update after lunch so support and ops can understand it easily.",
+    ),
+    glossary: [
+      {
+        term: "Incident room",
+        meaning: "The shared channel where the team coordinates during an active issue.",
+      },
+      {
+        term: "Platform shorthand",
+        meaning: "Short internal technical wording that other teams may not understand immediately.",
+      },
+    ],
+    translationBrief: {
+      meaning:
+        "A simpler update will be posted so support and regional operations can follow the status without translating technical shorthand.",
+      keepTerms: ["after lunch", "support", "regional ops"],
+      avoid: ["incident room", "platform shorthand"],
+    },
+    tags: ["action", "status"],
+  },
+];
+
+const standupSession = buildSession({
+  id: "demo-non-native-status",
+  title: "Fast technical status update for a non-native speaker",
+  subtitle: "Ops standup about queue latency, rollout guardrails, and clearer release-note wording",
+  attendees: standupAttendees,
+  transcript: standupTranscript,
+  overview:
+    "The platform team cleared the ingestion backlog, but one Europe-specific startup slowdown still causes queue spikes after idle periods. A pre-warm mitigation is already live, the rollout stays capped at 50% until alert volume drops, and the team is simplifying both the release note and the internal status update for broader audiences.",
+  keyPoints: [
+    {
+      id: "status-key-recovery",
+      title: "The backlog is cleared, but one regional slowdown remains",
+      body: "The issue now is a startup latency spike in the EU queue after quiet periods, not a growing backlog.",
+      sourceSegmentIds: ["status-001"],
+      confidence: "High confidence",
+    },
+    {
+      id: "status-key-mitigation",
+      title: "A mitigation is already running",
+      body: "A pre-warm job is active, but the team still wants alert volume to drop before expanding traffic.",
+      sourceSegmentIds: ["status-002"],
+      confidence: "High confidence",
+    },
+    {
+      id: "status-key-language",
+      title: "The team is simplifying both external and internal updates",
+      body: "Release notes and incident updates should describe user impact instead of making other teams translate platform shorthand.",
+      sourceSegmentIds: ["status-003", "status-005"],
+      confidence: "High confidence",
+    },
+  ],
+  decisions: [
+    {
+      id: "status-decision-cap",
+      title: "Stay at 50% traffic until the afternoon review",
+      body: "The team will keep traffic limited today and expand only if the queue remains stable at 4:00 PM GST.",
+      sourceSegmentIds: ["status-002", "status-004"],
+      confidence: "High confidence",
+      impact: "This reduces operational risk while the mitigation proves itself under live load.",
+    },
+  ],
+  actionItems: [
+    {
+      id: "status-action-update",
+      title: "Post a simpler incident-room update",
+      body: "Share a plain-language status line for support and regional operations after lunch.",
+      sourceSegmentIds: ["status-005"],
+      confidence: "High confidence",
+      owner: "Elena Costa",
+      dueDate: "Today after lunch",
+      status: "Open",
+    },
+  ],
+  risks: [
+    {
+      id: "status-risk-eu",
+      title: "EU queue still spikes after idle periods",
+      body: "Even with the mitigation, Europe still sees a startup slowdown when the OCR service has been quiet.",
+      sourceSegmentIds: ["status-001", "status-002"],
+      confidence: "High confidence",
+      severity: "High",
+    },
+  ],
+  followUps: [
+    {
+      id: "status-followup-review",
+      title: "Review queue stability and alert count at 4:00 PM GST",
+      body: "Use the afternoon checkpoint to decide whether the rollout can move from 50% to full traffic.",
+      sourceSegmentIds: ["status-004"],
+      confidence: "High confidence",
+      owner: "Samir Khan",
+    },
+  ],
+  audienceRecaps: {
+    executive:
+      "The backlog is cleared, but one regional performance spike remains after idle periods. A mitigation is live, the rollout stays capped at 50% today, and the afternoon review decides whether the risk is low enough to expand.",
+    client:
+      "The team resolved the main backlog issue overnight. One Europe-specific slowdown can still appear after long quiet periods, so rollout stays limited while the team confirms stability.",
+    engineer:
+      "Ingestion is caught up, but EU queue latency still spikes while the OCR bundle warms cold containers after idle. A fifteen-minute pre-warm is live and traffic remains capped at 50% pending the 4:00 PM GST review.",
+    newHire:
+      "The system is in better shape, but there is still one Europe-specific slowdown after the service sits idle. The team is keeping traffic limited until they confirm the fix is working.",
+    nonNative:
+      "The backlog is fixed. One Europe slowdown still remains after idle time. The team added a mitigation and is keeping traffic at 50% until the afternoon review.",
+  },
+});
+
+export const DEMO_SCENARIOS: DemoScenario[] = [
+  {
+    id: "client-call",
+    label: "Client call",
+    title: "Engineering update for a client",
+    description:
+      "Show how a technical billing issue becomes client-safe without losing the original meaning.",
+    recommendedAudience: "client",
+    session: clientCallSession,
+  },
+  {
+    id: "new-hire",
+    label: "Onboarding",
+    title: "Product explanation for a new hire",
+    description:
+      "Show how the product can explain itself clearly to someone new to the team.",
+    recommendedAudience: "newHire",
+    session: onboardingSession,
+  },
+  {
+    id: "non-native",
+    label: "Status update",
+    title: "Fast technical status update",
+    description:
+      "Show a quick infrastructure update rewritten into clearer language for a non-native speaker.",
+    recommendedAudience: "nonNative",
+    session: standupSession,
+  },
+];
+
+export const DEMO_SESSION = DEMO_SCENARIOS[0].session;
+
+export function getDemoScenario(scenarioId: string) {
+  return DEMO_SCENARIOS.find((scenario) => scenario.id === scenarioId) ?? DEMO_SCENARIOS[0];
+}

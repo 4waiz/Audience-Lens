@@ -8,7 +8,7 @@ describe("LandingPage", () => {
 
     expect(
       screen.getByRole("heading", {
-        name: /Speak normally\. Relay makes it understandable\./i,
+        name: /Speak once\. Meet people where they are\./i,
       }),
     ).toBeInTheDocument();
     expect(
@@ -17,6 +17,6 @@ describe("LandingPage", () => {
     expect(
       screen.getAllByRole("link", { name: /Start live session/i }).length,
     ).toBeGreaterThan(0);
-    expect(screen.getAllByText(/audience adaptation/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Audience adaptation/i).length).toBeGreaterThan(0);
   });
 });

@@ -41,7 +41,7 @@ export function createSessionFromDemo(options: SessionFactoryOptions): SessionRe
     (options.kind === "upload"
       ? "Processed upload review"
       : options.kind === "live"
-        ? "Live clarity session"
+        ? "Live session"
         : session.title);
   session.subtitle =
     options.subtitle ??

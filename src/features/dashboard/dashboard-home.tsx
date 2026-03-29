@@ -40,10 +40,10 @@ export function DashboardHome() {
         <Card className="app-gradient">
           <CardHeader>
             <p className="eyebrow">Welcome</p>
-            <CardTitle className="text-3xl">Control center</CardTitle>
+            <CardTitle className="text-3xl">Start with the clearest path</CardTitle>
             <CardDescription className="max-w-2xl">
               Start with the sample demo if you want the fastest path. Use live mode
-              when you want to show the preflight and microphone experience as well.
+              when you want to show microphone capture and fallback behavior as well.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 md:grid-cols-3">

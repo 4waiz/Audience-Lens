@@ -1,8 +1,8 @@
-# RELAY Design Rationale
+# Common Ground Design Rationale
 
 Updated: March 29, 2026
 
-RELAY is designed around a simple product truth: people often speak in ways that make sense to themselves but not to everyone in the room. The product therefore needs to do two jobs at once:
+Common Ground is designed around a simple product truth: people often speak in ways that make sense to themselves but not to everyone in the room. The product therefore needs to do two jobs at once:
 
 1. preserve the original conversation faithfully
 2. make that conversation easier to understand for a specific audience
@@ -39,7 +39,7 @@ RELAY is designed around a simple product truth: people often speak in ways that
 
 ### 1. Demo first, not setup first
 
-Public discussions around AI note takers consistently describe cleanup overhead after the meeting and frustration with onboarding that delays value. RELAY therefore defaults to an immediate sample demo path from the landing page. The judge can see the differentiator in seconds without creating an account, enabling a mic, or uploading a file.
+Public discussions around AI note takers consistently describe cleanup overhead after the meeting and frustration with onboarding that delays value. Common Ground therefore defaults to an immediate sample demo path from the landing page. The judge can see the differentiator in seconds without creating an account, enabling a mic, or uploading a file.
 
 ### 2. Transcript stays visible at all times
 
@@ -47,11 +47,11 @@ Users trust recap output more when they can verify where it came from. The app k
 
 ### 3. The live workspace prioritizes adaptation, not just summary
 
-Teams, Zoom, Otter, and Fireflies all emphasize notes, summaries, and action items. RELAY adopts the useful recap patterns but makes the right-hand pane about clarity and audience adaptation first. The product story is not "we also summarize meetings"; it is "we make the same message understandable for the person hearing it."
+Teams, Zoom, Otter, and Fireflies all emphasize notes, summaries, and action items. Common Ground adopts the useful recap patterns but makes the right-hand pane about clarity and audience adaptation first. The product story is not "we also summarize meetings"; it is "we make the same message understandable for the person hearing it."
 
 ### 4. Mobile gets prioritization, not a shrunken desktop
 
-Material adaptive guidance reinforced a compact-to-expanded navigation model. RELAY uses a rail/sidebar on larger screens and a bottom navigation pattern on smaller screens. The workspace also changes priority by breakpoint: transcript first, adaptation second, summary third.
+Material adaptive guidance reinforced a compact-to-expanded navigation model. Common Ground uses a rail/sidebar on larger screens and a bottom navigation pattern on smaller screens. The workspace also changes priority by breakpoint: transcript first, adaptation second, summary third.
 
 ### 5. Errors and permissions are product surfaces
 
@@ -72,7 +72,7 @@ The UI labels summaries and rewrites as AI-generated drafts and preserves manual
 - Zoom AI Companion:
   meeting summaries and task extraction tied back to meeting context. We adopted action-oriented recap structure and follow-through framing.
 
-## Experience Principles Used In RELAY
+## Experience Principles Used In Common Ground
 
 - Show value in under 10 seconds.
 - Keep the original words visible.

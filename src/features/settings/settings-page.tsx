@@ -65,7 +65,7 @@ export function SettingsPage({
         <CardHeader>
           <CardTitle>Preferences</CardTitle>
           <CardDescription>
-            Save the defaults Relay should use when a session starts.
+            Save the defaults Common Ground should use when a session starts.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -199,7 +199,7 @@ export function SettingsPage({
               <div>
                 <CardTitle>Provider status</CardTitle>
                 <CardDescription>
-                  Relay is fully usable in demo mode even without keys.
+                  Common Ground is fully usable in demo mode even without keys.
                 </CardDescription>
               </div>
             </div>
@@ -228,7 +228,7 @@ export function SettingsPage({
             </div>
             {!providerSummary.hasConfiguredProvider ? (
               <div className="rounded-[22px] border border-accent/20 bg-accent/8 p-4 text-sm text-muted-foreground">
-                No API keys are configured. Relay will keep using rich demo-safe
+                No API keys are configured. Common Ground will keep using demo-safe
                 transcript streaming and recap generation until providers are added.
               </div>
             ) : null}
@@ -242,7 +242,7 @@ export function SettingsPage({
               <div>
                 <CardTitle>Microphone permissions</CardTitle>
                 <CardDescription>
-                  Relay asks for access only when you start a live session.
+                  Common Ground asks for access only when you start a live session.
                 </CardDescription>
               </div>
             </div>

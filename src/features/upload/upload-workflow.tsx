@@ -112,8 +112,8 @@ export function UploadWorkflow() {
         <CardHeader>
           <CardTitle>Upload a recording</CardTitle>
           <CardDescription>
-            Relay will process the file into a transcript, clearer rewrites, and a
-            structured recap with decisions and action items.
+            Common Ground will process the file into a transcript, clearer rewrites,
+            and a structured recap with decisions and action items.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -183,8 +183,8 @@ export function UploadWorkflow() {
         <CardHeader>
           <CardTitle>Processing status</CardTitle>
           <CardDescription>
-            Relay shows a clear stage for each step instead of leaving users with a
-            generic spinner.
+            Common Ground shows a clear stage for each step instead of leaving users
+            with a generic spinner.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">

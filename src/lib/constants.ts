@@ -101,15 +101,15 @@ export const APP_NAV_ITEMS = [
   { href: "/app/settings", label: "Settings" },
 ] as const;
 
-export const SESSION_STORAGE_KEY = "relay.sessions.v1";
-export const PREFERENCES_STORAGE_KEY = "relay.preferences.v1";
+export const SESSION_STORAGE_KEY = "common-ground.sessions.v1";
+export const PREFERENCES_STORAGE_KEY = "common-ground.preferences.v1";
 
 export const PROCESSING_STAGE_LABELS = {
   idle: "Ready",
   uploading: "Uploading",
   transcribing: "Transcribing",
-  clarifying: "Clarifying",
-  extracting: "Extracting decisions and actions",
+  clarifying: "Adapting for the room",
+  extracting: "Building recap",
   complete: "Complete",
   error: "Something went wrong",
 } as const;
@@ -125,5 +125,5 @@ export const EXPORT_LABELS = {
 export const SESSION_KIND_LABELS = {
   demo: "Sample demo",
   live: "Live session",
-  upload: "Upload",
+  upload: "Uploaded recording",
 } as const;

@@ -25,7 +25,7 @@ describe("SessionDetailPage", () => {
     render(<SessionDetailPage sessionId={DEMO_SESSION.id} />);
 
     expect(screen.getByTestId("summary-overview")).toHaveTextContent(
-      /The team aligned on a cautious staged rollout/i,
+      /The team aligned on how to explain a billing retry edge case/i,
     );
     expect(screen.getByRole("tab", { name: /Full transcript/i })).toBeInTheDocument();
     await user.click(screen.getByRole("tab", { name: /Full transcript/i }));

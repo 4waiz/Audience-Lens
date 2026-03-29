@@ -29,12 +29,12 @@ export function ClarityStudio({
       <CardHeader className="gap-4">
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <CardTitle>Clarity Studio</CardTitle>
-            <StatusPill label="AI-generated draft" tone="accent" showDot={false} />
+            <CardTitle>Audience adaptation</CardTitle>
+            <StatusPill label="Adapted draft" tone="accent" showDot={false} />
           </div>
           <p className="text-sm text-muted-foreground">
-            Relay keeps the source transcript visible and rewrites meaning for the
-            audience listening.
+            Common Ground keeps the source transcript visible and rewrites meaning
+            for the audience listening.
           </p>
           <AudienceSelector onValueChange={onAudienceChange} value={audience} />
         </div>
@@ -49,20 +49,20 @@ export function ClarityStudio({
           </TabsList>
 
           <TabsContent value="plain">
-            <div className="space-y-5 rounded-[24px] border border-border bg-muted/30 p-5">
+            <div className="space-y-5 rounded-[24px] border border-border bg-[#faf9f7] p-5">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <Sparkles className="size-4 text-accent" />
                 Plain-English rewrite
               </div>
               <p className="text-sm leading-7 text-foreground">
                 {source?.plainEnglish ??
-                  "Once transcript lines start arriving, Relay will simplify the selected segment here."}
+                  "Once transcript lines start arriving, Common Ground will simplify the selected segment here."}
               </p>
-              <div className="rounded-[20px] border border-border bg-card/70 p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+              <div className="rounded-[20px] border border-border bg-white p-4">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
                   Why this matters
                 </p>
-                <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
+                <ul className="mt-3 space-y-2 text-sm text-[rgba(23,19,41,0.76)]">
                   {(source?.glossary ?? []).map((term) => (
                     <li key={term.term}>
                       <span className="font-medium text-foreground">{term.term}:</span>{" "}
@@ -70,7 +70,7 @@ export function ClarityStudio({
                     </li>
                   ))}
                   {source?.glossary.length ? null : (
-                    <li>Relay will surface jargon explanations for the active segment.</li>
+                    <li>Common Ground will surface jargon explanations for the active segment.</li>
                   )}
                 </ul>
               </div>
@@ -78,17 +78,17 @@ export function ClarityStudio({
           </TabsContent>
 
           <TabsContent value="audience">
-            <div className="space-y-5 rounded-[24px] border border-border bg-muted/30 p-5">
+            <div className="space-y-5 rounded-[24px] border border-border bg-[#faf9f7] p-5">
               <p className="text-sm font-medium text-foreground">Adapted for {audience}</p>
               <p className="text-sm leading-7 text-foreground">
                 {source?.audienceVersions[audience] ??
                   visibleSession.audienceRecaps[audience]}
               </p>
-              <div className="rounded-[20px] border border-border bg-card/70 p-4">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+              <div className="rounded-[20px] border border-border bg-white p-4">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
                   Session recap for this audience
                 </p>
-                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                <p className="mt-3 text-sm leading-7 text-[rgba(23,19,41,0.76)]">
                   {visibleSession.audienceRecaps[audience]}
                 </p>
               </div>
@@ -96,27 +96,27 @@ export function ClarityStudio({
           </TabsContent>
 
           <TabsContent value="translation">
-            <div className="space-y-5 rounded-[24px] border border-border bg-muted/30 p-5">
+            <div className="space-y-5 rounded-[24px] border border-border bg-[#faf9f7] p-5">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <Languages className="size-4 text-info" />
                 Translation-ready structure
               </div>
-              <div className="space-y-4 rounded-[20px] border border-border bg-card/70 p-4">
+              <div className="space-y-4 rounded-[20px] border border-border bg-white p-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
                     Meaning to preserve
                   </p>
                   <p className="mt-2 text-sm text-foreground">
                     {source?.translationBrief.meaning ??
-                      "Relay will summarize the selected segment in translator-friendly language."}
+                      "Common Ground will summarize the selected segment in translator-friendly language."}
                   </p>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
                       Keep these terms
                     </p>
-                    <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+                    <ul className="mt-2 space-y-2 text-sm text-[rgba(23,19,41,0.76)]">
                       {(source?.translationBrief.keepTerms ?? ["Key terms appear here"]).map(
                         (term) => (
                           <li key={term}>{term}</li>
@@ -125,10 +125,10 @@ export function ClarityStudio({
                     </ul>
                   </div>
                   <div>
-                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                    <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
                       Avoid these phrases
                     </p>
-                    <ul className="mt-2 space-y-2 text-sm text-muted-foreground">
+                    <ul className="mt-2 space-y-2 text-sm text-[rgba(23,19,41,0.76)]">
                       {(source?.translationBrief.avoid ?? ["Ambiguous phrases appear here"]).map(
                         (term) => (
                           <li key={term}>{term}</li>
@@ -138,12 +138,12 @@ export function ClarityStudio({
                   </div>
                 </div>
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
                     Output language draft
                   </p>
                   <p className="mt-2 text-sm text-foreground">
                     {source?.translationBrief.localizedDrafts?.[outputLanguage] ??
-                      "No direct localized draft for this segment yet. Relay is still providing a translation-safe structure and preserved terminology."}
+                      "No direct localized draft for this segment yet. Common Ground is still providing a translation-safe structure and preserved terminology."}
                   </p>
                 </div>
               </div>
@@ -151,9 +151,9 @@ export function ClarityStudio({
           </TabsContent>
 
           <TabsContent value="summary">
-            <div className="space-y-4 rounded-[24px] border border-border bg-muted/30 p-5">
+            <div className="space-y-4 rounded-[24px] border border-border bg-[#faf9f7] p-5">
               <p className="text-sm font-medium text-foreground">Summary preview</p>
-              <p className="text-sm leading-7 text-muted-foreground">
+              <p className="text-sm leading-7 text-[rgba(23,19,41,0.76)]">
                 {visibleSession.overview}
               </p>
               <div className="space-y-3">
@@ -161,15 +161,15 @@ export function ClarityStudio({
                   visibleKeyPoints.map((item) => (
                     <div
                       key={item.id}
-                      className="rounded-[20px] border border-border bg-card/70 p-4"
+                      className="rounded-[20px] border border-border bg-white p-4"
                     >
                       <p className="text-sm font-medium text-foreground">{item.title}</p>
-                      <p className="mt-2 text-sm text-muted-foreground">{item.body}</p>
+                      <p className="mt-2 text-sm text-[rgba(23,19,41,0.76)]">{item.body}</p>
                     </div>
                   ))
                 ) : (
-                  <div className="rounded-[20px] border border-dashed border-border bg-card/50 p-4 text-sm text-muted-foreground">
-                    Summary cards will appear as Relay gathers enough transcript evidence.
+                  <div className="rounded-[20px] border border-dashed border-border bg-white/80 p-4 text-sm text-[rgba(23,19,41,0.76)]">
+                    Summary cards will appear as Common Ground gathers enough transcript evidence.
                   </div>
                 )}
               </div>

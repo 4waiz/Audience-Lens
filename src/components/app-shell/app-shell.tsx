@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 
 import { RelayLogo } from "@/components/relay-logo";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { StatusPill } from "@/components/status-pill";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,8 +37,8 @@ function isActive(pathname: string, href: string) {
 function getRouteHeader(pathname: string) {
   if (pathname === "/app") {
     return {
-      eyebrow: "Relay workspace",
-      title: "Control center",
+      eyebrow: "Common Ground workspace",
+      title: "Demo center",
       description: "Choose the fastest path into the product.",
     };
   }
@@ -93,9 +92,9 @@ function getRouteHeader(pathname: string) {
   }
 
   return {
-    eyebrow: "Relay workspace",
+    eyebrow: "Common Ground workspace",
     title: "Workspace",
-    description: "Audience-safe communication, captured and clarified.",
+    description: "Speech in, audience-ready explanation out, recap attached.",
   };
 }
 
@@ -105,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="page-shell flex min-h-screen gap-0 pb-24 md:pb-8">
-      <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-[248px] flex-col justify-between rounded-l-[32px] rounded-r-none border border-r-0 border-border bg-card/85 p-5 backdrop-blur md:flex">
+      <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-[260px] flex-col justify-between rounded-l-[32px] rounded-r-none border border-r-0 border-border bg-white/96 p-5 shadow-soft md:flex">
         <div className="space-y-8">
           <RelayLogo href="/app" />
           <nav aria-label="Primary" className="space-y-1">
@@ -116,9 +115,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex min-h-11 items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted/80 hover:text-foreground",
+                    "flex min-h-11 items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium text-[rgba(23,19,41,0.72)] transition hover:bg-[rgba(124,77,255,0.08)] hover:text-foreground",
                     isActive(pathname, item.href) &&
-                      "bg-muted text-foreground shadow-sm",
+                      "bg-[rgba(124,77,255,0.12)] text-foreground shadow-[0_10px_24px_rgba(124,77,255,0.1)]",
                   )}
                 >
                   <Icon className="size-4" />
@@ -128,9 +127,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
         </div>
-        <div className="space-y-4 rounded-[24px] border border-border bg-muted/50 p-4">
+        <div className="space-y-4 rounded-[24px] border border-border bg-[rgba(241,236,255,0.72)] p-4">
           <StatusPill label="Guest mode" tone="accent" />
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-[rgba(23,19,41,0.76)]">
             Demo-safe experience. Live and upload routes still work without API keys.
           </p>
           <Button asChild className="w-full" variant="outline">
@@ -140,14 +139,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 grid grid-cols-1 items-center gap-3 border-b border-border/70 bg-background/90 px-6 py-4 backdrop-blur md:grid-cols-[96px_minmax(0,1fr)_auto] md:px-8 lg:grid-cols-[128px_minmax(0,1fr)_auto] lg:px-12">
+        <header className="sticky top-0 z-30 grid grid-cols-1 items-center gap-3 border-b border-border bg-[rgba(246,244,238,0.97)] px-6 py-4 backdrop-blur md:grid-cols-[96px_minmax(0,1fr)_auto] md:px-8 lg:grid-cols-[128px_minmax(0,1fr)_auto] lg:px-12">
           <div aria-hidden className="hidden md:block" />
           <div className="min-w-0">
             <p className="eyebrow">{routeHeader.eyebrow}</p>
             <h1 className="truncate text-2xl font-semibold tracking-tight md:text-3xl">
               {routeHeader.title}
             </h1>
-            <p className="mt-1 hidden text-sm text-muted-foreground md:block">
+            <p className="mt-1 hidden text-sm text-[rgba(23,19,41,0.76)] md:block">
               {routeHeader.description}
             </p>
           </div>
@@ -161,7 +160,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 Recent
               </Link>
             </Button>
-            <ThemeToggle />
           </div>
         </header>
         <main className="flex-1 px-6 py-6 md:px-8 lg:px-12">
@@ -169,7 +167,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
 
-      <nav className="fixed inset-x-4 bottom-4 z-40 rounded-[28px] border border-border bg-card/95 p-2 shadow-soft backdrop-blur md:hidden">
+      <nav className="fixed inset-x-4 bottom-4 z-40 rounded-[28px] border border-border bg-card p-2 shadow-soft backdrop-blur md:hidden">
         <ul className="grid grid-cols-6 gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -178,8 +176,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex min-h-14 flex-col items-center justify-center rounded-2xl px-2 text-[11px] font-medium text-muted-foreground transition",
-                    isActive(pathname, item.href) && "bg-muted text-foreground",
+                    "flex min-h-14 flex-col items-center justify-center rounded-2xl px-2 text-[11px] font-medium text-[rgba(23,19,41,0.72)] transition",
+                    isActive(pathname, item.href) &&
+                      "bg-[rgba(124,77,255,0.12)] text-foreground",
                   )}
                 >
                   <Icon className="mb-1 size-4" />

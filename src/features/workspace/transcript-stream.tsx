@@ -27,8 +27,8 @@ function TranscriptSegmentCard({
       className={cn(
         "w-full rounded-[24px] border p-4 text-left transition focus-visible:outline-none",
         selected
-          ? "border-accent/30 bg-accent/8 shadow-panel"
-          : "border-border bg-card/70 hover:bg-muted/50",
+          ? "border-accent/30 bg-[rgba(124,77,255,0.12)] shadow-panel"
+          : "border-border bg-white hover:bg-[rgba(124,77,255,0.04)]",
       )}
       data-testid="transcript-segment"
       initial={reducedMotion ? false : { opacity: 0, y: 10 }}
@@ -37,7 +37,7 @@ function TranscriptSegmentCard({
     >
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="flex size-10 items-center justify-center rounded-2xl bg-muted text-xs font-semibold">
+          <span className="flex size-10 items-center justify-center rounded-2xl bg-[rgba(124,77,255,0.12)] text-xs font-semibold text-accent">
             {getInitials(segment.speaker)}
           </span>
           <div>
@@ -54,7 +54,7 @@ function TranscriptSegmentCard({
         {segment.tags.slice(0, 3).map((tag) => (
           <span
             key={tag}
-            className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-muted-foreground"
+            className="rounded-full border border-[rgba(23,19,41,0.08)] bg-[rgba(237,232,248,0.62)] px-2.5 py-1 text-[11px] font-medium text-[rgba(23,19,41,0.72)]"
           >
             {tag}
           </span>
@@ -100,7 +100,7 @@ export function TranscriptStream({
           <div>
             <CardTitle>Live transcript</CardTitle>
             <p className="mt-1 text-sm text-muted-foreground">
-              Keep the original words visible while Relay clarifies meaning.
+              Keep the original words visible while Common Ground clarifies meaning.
             </p>
           </div>
           <StatusPill label={running ? "Updating live" : "Replay ready"} tone={running ? "live" : "default"} />
@@ -123,7 +123,7 @@ export function TranscriptStream({
             <Skeleton className="h-28 w-full" />
           </div>
         ) : filteredSegments.length === 0 ? (
-          <div className="rounded-[24px] border border-dashed border-border bg-muted/30 p-8 text-center">
+          <div className="rounded-[24px] border border-dashed border-border bg-[rgba(237,232,248,0.28)] p-8 text-center">
             <p className="text-base font-medium text-foreground">No transcript matches</p>
             <p className="mt-2 text-sm text-muted-foreground">
               Try a different speaker name, topic, or keyword.

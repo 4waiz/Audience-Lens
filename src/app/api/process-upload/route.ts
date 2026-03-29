@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     inputLanguage: "en-US",
     outputLanguage: "en",
     title: file.name.replace(/\.[^.]+$/, ""),
-    subtitle: "Imported recording processed with Relay demo services",
+    subtitle: "Imported recording processed with Common Ground demo services",
     sourceFileName: file.name,
     sourceDurationLabel: "08:14",
   });

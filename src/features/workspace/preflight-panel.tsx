@@ -7,7 +7,13 @@ import { StatusPill } from "@/components/status-pill";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { SelectContent, SelectItem, SelectTrigger, SelectValue, Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AUDIENCE_OPTIONS, INPUT_LANGUAGE_OPTIONS, OUTPUT_LANGUAGE_OPTIONS } from "@/lib/constants";
 import type {
   AudienceMode,
@@ -40,8 +46,8 @@ function PermissionMessage({ state }: { state: PermissionState }) {
       >
         <p className="text-sm font-medium text-foreground">Live microphone capture is unavailable</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          This browser does not expose the media APIs Relay needs. Use the sample
-          demo or upload a recording instead.
+          This browser does not expose the speech-recognition APIs Common Ground
+          needs for live capture. Use the sample demo or upload a recording instead.
         </p>
       </div>
     );
@@ -69,9 +75,9 @@ function PermissionMessage({ state }: { state: PermissionState }) {
         Permission guidance
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
-        Relay asks for microphone access only when you start a live session. If no
-        provider is configured, the app still runs a realistic local demo feed so
-        judges can see the full workflow without setup.
+        Common Ground asks for microphone access only when you start a live
+        session. If speech recognition is unavailable, the sample demo still shows
+        the full workflow without setup.
       </p>
     </div>
   );
@@ -81,26 +87,20 @@ export function PreflightPanel({
   inputLanguage,
   outputLanguage,
   audience,
-  deviceId,
-  devices,
   permissionState,
   onInputLanguageChange,
   onOutputLanguageChange,
   onAudienceChange,
-  onDeviceChange,
   onStart,
   onUseSampleDemo,
 }: {
   inputLanguage: InputLanguageCode;
   outputLanguage: OutputLanguageCode;
   audience: AudienceMode;
-  deviceId: string;
-  devices: MediaDeviceInfo[];
   permissionState: PermissionState;
   onInputLanguageChange: (value: InputLanguageCode) => void;
   onOutputLanguageChange: (value: OutputLanguageCode) => void;
   onAudienceChange: (value: AudienceMode) => void;
-  onDeviceChange: (value: string) => void;
   onStart: () => void;
   onUseSampleDemo: () => void;
 }) {
@@ -115,8 +115,8 @@ export function PreflightPanel({
             <div>
               <CardTitle>Start a live session</CardTitle>
               <CardDescription>
-                Choose the audience, confirm language defaults, then start a demo-safe
-                real-time session.
+                Choose the audience, confirm language defaults, then capture live
+                speech if this browser supports it.
               </CardDescription>
             </div>
           </div>
@@ -145,7 +145,10 @@ export function PreflightPanel({
 
           <div className="space-y-2">
             <Label htmlFor="default-audience">Default audience mode</Label>
-            <Select onValueChange={(value) => onAudienceChange(value as AudienceMode)} value={audience}>
+            <Select
+              onValueChange={(value) => onAudienceChange(value as AudienceMode)}
+              value={audience}
+            >
               <SelectTrigger id="default-audience">
                 <SelectValue />
               </SelectTrigger>
@@ -159,23 +162,6 @@ export function PreflightPanel({
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="device">Microphone device</Label>
-            <Select onValueChange={onDeviceChange} value={deviceId}>
-              <SelectTrigger id="device">
-                <SelectValue placeholder="Use default microphone" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="default">Use default microphone</SelectItem>
-                {devices.map((device, index) => (
-                  <SelectItem key={device.deviceId || index} value={device.deviceId || `device-${index}`}>
-                    {device.label || `Microphone ${index + 1}`}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="flex flex-wrap items-center gap-3">
             <Button onClick={onStart}>Start session</Button>
             <Button onClick={onUseSampleDemo} variant="outline">
@@ -183,7 +169,14 @@ export function PreflightPanel({
             </Button>
             <StatusPill
               label={permissionState === "idle" ? "Ready" : permissionState}
-              tone={permissionState === "denied" ? "danger" : permissionState === "unsupported" || permissionState === "no-device" ? "warning" : "accent"}
+              tone={
+                permissionState === "denied"
+                  ? "danger"
+                  : permissionState === "unsupported" ||
+                      permissionState === "no-device"
+                    ? "warning"
+                    : "accent"
+              }
             />
           </div>
         </CardContent>
@@ -195,14 +188,17 @@ export function PreflightPanel({
           <CardHeader>
             <CardTitle>What the judge sees</CardTitle>
             <CardDescription>
-              Transcript on the left, audience-specific clarification on the right,
-              then recap and export without leaving the workspace.
+              Transcript on the left, audience adaptation on the right, then recap
+              and export without leaving the workspace.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>1. Start or use the sample feed.</p>
-            <p>2. Watch confusing language become audience-safe in real time.</p>
-            <p>3. Export a recap with decisions and action items tied back to transcript evidence.</p>
+            <p>2. Watch the same explanation change for the selected listener.</p>
+            <p>
+              3. Export a recap with decisions and action items tied back to transcript
+              evidence.
+            </p>
           </CardContent>
         </Card>
       </div>

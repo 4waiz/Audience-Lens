@@ -19,7 +19,7 @@ interface SessionsContextValue {
   hydrated: boolean;
   upsertSession: (session: SessionRecord) => void;
   removeSession: (id: string) => void;
-  seedDemoSession: () => void;
+  seedDemoSession: (session?: SessionRecord) => void;
   getSessionById: (id: string) => SessionRecord | undefined;
 }
 
@@ -66,9 +66,9 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
     setSessions((current) => current.filter((session) => session.id !== id));
   }, []);
 
-  const seedDemoSession = useCallback(() => {
+  const seedDemoSession = useCallback((session: SessionRecord = DEMO_SESSION) => {
     upsertSession({
-      ...DEMO_SESSION,
+      ...session,
       updatedAt: new Date().toISOString(),
     });
   }, [upsertSession]);

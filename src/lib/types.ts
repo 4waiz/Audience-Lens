@@ -149,3 +149,12 @@ export interface SessionPreferences {
   outputLanguage: OutputLanguageCode;
   motionPreference: "system" | "reduced" | "full";
 }
+
+export interface DemoScenario {
+  id: string;
+  label: string;
+  title: string;
+  description: string;
+  recommendedAudience: AudienceMode;
+  session: SessionRecord;
+}
