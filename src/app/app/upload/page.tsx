@@ -1,5 +1,5 @@
-import { UploadWorkflow } from "@/features/upload/upload-workflow";
+import { CommonGroundProductPage } from "@/features/product/common-ground-product-page";
 
 export default function UploadRoute() {
-  return <UploadWorkflow />;
+  return <CommonGroundProductPage initialMode="upload" />;
 }

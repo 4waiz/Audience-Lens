@@ -1,5 +1,5 @@
-import { DashboardHome } from "@/features/dashboard/dashboard-home";
+import { CommonGroundProductPage } from "@/features/product/common-ground-product-page";
 
 export default function AppPage() {
-  return <DashboardHome />;
+  return <CommonGroundProductPage />;
 }

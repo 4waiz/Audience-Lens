@@ -135,6 +135,8 @@ function extractTags(text: string) {
 export function adaptText(text: string, audience: AudienceMode) {
   const simple = simplifyText(text);
   const clauses = splitClauses(simple);
+  const firstClause = clauses[0] ?? "The team shared an update.";
+  const secondClause = clauses[1];
 
   if (audience === "engineer") {
     return toSentenceCase(text.trim());
@@ -142,8 +144,12 @@ export function adaptText(text: string, audience: AudienceMode) {
 
   if (audience === "executive") {
     return toSentenceCase(
-      clauses.slice(0, 2).join(". ") ||
-        "Key point: the team has a clear status update and next step.",
+      [
+        `Outcome: ${firstClause.replace(/\.$/, "")}`,
+        secondClause ? `Next: ${secondClause.replace(/\.$/, "")}` : undefined,
+      ]
+        .filter(Boolean)
+        .join(". ") || "Outcome: the team has a clear update and next step.",
     );
   }
 
@@ -157,21 +163,23 @@ export function adaptText(text: string, audience: AudienceMode) {
             .replace(/\s+/g, " ")
             .trim(),
         )
-        .join(". "),
+        .join(". ") || "Here is the client-ready version of the update.",
     );
   }
 
   if (audience === "newHire") {
     const context =
       clauses.length > 1
-        ? `${clauses[0]}. This means ${clauses[1].charAt(0).toLowerCase()}${clauses[1].slice(1)}`
-        : `${clauses[0] ?? simple}. This is the main point the team is discussing.`;
+        ? `${firstClause}. In plain terms, ${clauses[1].charAt(0).toLowerCase()}${clauses[1].slice(1)}`
+        : `${firstClause}. This is the main point the team is discussing.`;
 
     return toSentenceCase(context);
   }
 
   return toSentenceCase(
-    clauses.map((clause) => clause.replace(/:/g, ".")).join(". "),
+    clauses
+      .map((clause) => clause.replace(/:/g, "."))
+      .join(". ") || "Here is the simpler version of the message.",
   );
 }
 

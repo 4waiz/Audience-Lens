@@ -1,5 +1,5 @@
-import { LiveWorkspace } from "@/features/workspace/live-workspace";
+import { CommonGroundProductPage } from "@/features/product/common-ground-product-page";
 
 export default function DemoRoute() {
-  return <LiveWorkspace mode="demo" />;
+  return <CommonGroundProductPage initialMode="sample" />;
 }

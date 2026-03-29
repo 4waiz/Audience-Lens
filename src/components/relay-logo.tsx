@@ -15,20 +15,20 @@ export function RelayLogo({
   showTagline?: boolean;
 }) {
   return (
-    <Link href={href} className={cn("inline-flex items-center gap-4", className)}>
+    <Link href={href} className={cn("inline-flex items-center gap-3", className)}>
       <Image
         src="/icon.svg"
         alt=""
         aria-hidden
-        width={60}
-        height={60}
-        className="size-14 rounded-[20px] border border-[rgba(124,77,255,0.22)] bg-white object-contain shadow-[0_14px_34px_rgba(91,45,225,0.16)]"
+        width={48}
+        height={48}
+        className="size-11 rounded-[16px] border border-[rgba(124,77,255,0.2)] bg-white object-contain shadow-[0_12px_28px_rgba(91,45,225,0.14)]"
         priority
       />
       <span className="flex flex-col gap-0.5">
         <span
           className={cn(
-            "text-base font-semibold tracking-[-0.04em] sm:text-lg",
+            "text-base font-semibold tracking-[-0.04em]",
             tone === "dark" ? "text-white" : "text-[var(--ink)]",
           )}
         >

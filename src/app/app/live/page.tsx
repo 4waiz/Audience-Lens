@@ -1,5 +1,5 @@
-import { LiveWorkspace } from "@/features/workspace/live-workspace";
+import { CommonGroundProductPage } from "@/features/product/common-ground-product-page";
 
 export default function LiveRoute() {
-  return <LiveWorkspace mode="live" />;
+  return <CommonGroundProductPage initialMode="speak" />;
 }
