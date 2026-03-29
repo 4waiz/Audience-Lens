@@ -666,7 +666,7 @@ export function CommonGroundProductPage({
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl space-y-3">
                 <p className="eyebrow">Real-time audience adaptation</p>
-                <h1 className="max-w-[10ch] text-[clamp(2.9rem,7vw,5rem)] font-semibold tracking-[-0.075em] text-[var(--ink)]">
+                <h1 className="max-w-[13ch] text-[clamp(2.35rem,5.6vw,4rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-[var(--ink)]">
                   Speak once. Meet people where they are.
                 </h1>
                 <p className="max-w-[40rem] text-[15px] leading-6 text-[var(--ink-tint)] sm:text-base">
