@@ -505,7 +505,7 @@ export function LiveWorkspace({ mode }: { mode: "demo" | "live" }) {
 
   function renderWorkspace() {
     return (
-      <div className="space-y-6">
+      <div className="light-canvas space-y-6">
         {networkLost ? (
           <Card className="border-warning/20 bg-warning/8">
             <CardContent className="flex items-start gap-3 p-5">
@@ -523,14 +523,14 @@ export function LiveWorkspace({ mode }: { mode: "demo" | "live" }) {
           </Card>
         ) : null}
 
-        <Card className="overflow-hidden">
-          <CardContent className="flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
+        <Card className="overflow-hidden border-[rgba(23,19,41,0.1)] bg-white shadow-soft">
+          <CardContent className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+            <div className="min-w-0">
               <p className="eyebrow">
                 {mode === "demo" ? "Sample workspace" : "Live workspace"}
               </p>
-              <div className="mt-2 flex flex-wrap items-center gap-3">
-                <h2 className="text-2xl font-semibold tracking-[-0.05em] md:text-3xl">
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <h2 className="max-w-[18ch] text-[clamp(1.85rem,3vw,3.2rem)] font-semibold tracking-[-0.06em] text-[var(--ink)]">
                   {mode === "demo" ? scenario.session.title : "Live session"}
                 </h2>
                 <StatusPill
@@ -553,12 +553,12 @@ export function LiveWorkspace({ mode }: { mode: "demo" | "live" }) {
                 />
                 <WaveformIndicator active={running && !paused && !complete} />
               </div>
-              <p className="mt-2 text-sm text-[rgba(23,19,41,0.76)]">
+              <p className="mt-3 max-w-[52ch] text-sm text-[var(--ink-tint)]">
                 Timer: {formatDuration(timerValue)} | {displayedSegments.length} transcript lines ready
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:flex lg:items-center">
+            <div className="grid gap-3 sm:grid-cols-2 xl:flex xl:items-center xl:justify-end">
               <div className="min-w-[180px]">
                 <LanguageSelect
                   onValueChange={(value) => {
@@ -629,15 +629,17 @@ export function LiveWorkspace({ mode }: { mode: "demo" | "live" }) {
                 }}
                 className={`rounded-[28px] border p-5 text-left transition ${
                   item.id === scenarioId
-                    ? "border-accent/30 bg-[rgba(124,77,255,0.12)] shadow-panel"
-                    : "border-border bg-white hover:bg-[rgba(124,77,255,0.04)]"
+                    ? "border-[rgba(124,77,255,0.28)] bg-[rgba(124,77,255,0.12)] shadow-panel"
+                    : "border-[rgba(23,19,41,0.1)] bg-white hover:border-[rgba(124,77,255,0.2)] hover:bg-[rgba(124,77,255,0.04)]"
                 }`}
               >
                 <p className="eyebrow">{item.label}</p>
                 <p className="mt-3 text-lg font-semibold tracking-[-0.03em] text-foreground">
                   {item.title}
                 </p>
-                <p className="mt-2 text-sm leading-7 text-[rgba(23,19,41,0.76)]">{item.description}</p>
+                <p className="mt-2 text-sm leading-7 text-[var(--ink-tint)]">
+                  {item.description}
+                </p>
               </button>
             ))}
           </div>

@@ -1,7 +1,10 @@
 import type {
   AudienceMode,
   ConfidenceLabel,
+  InputLanguageCode,
+  OutputLanguageCode,
   RiskItem,
+  SessionKind,
   SessionRecord,
   TranscriptSegment,
 } from "@/lib/types";
@@ -334,4 +337,112 @@ export function buildFallbackSession(options: {
       nonNative: buildAudienceRecap(transcript, "nonNative"),
     },
   };
+}
+
+function splitSourceIntoChunks(sourceText: string) {
+  const normalized = sourceText.replace(/\r/g, "").trim();
+
+  if (!normalized) {
+    return [];
+  }
+
+  return normalized
+    .split(/\n{2,}/)
+    .flatMap((paragraph) => {
+      const trimmedParagraph = paragraph.trim();
+
+      if (!trimmedParagraph) {
+        return [];
+      }
+
+      const explicitLines = trimmedParagraph
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      if (explicitLines.length > 1) {
+        return explicitLines;
+      }
+
+      if (trimmedParagraph.length < 220) {
+        return [trimmedParagraph];
+      }
+
+      return trimmedParagraph
+        .split(/(?<=[.!?])\s+(?=[A-Z0-9])/)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean);
+    });
+}
+
+function extractSpeakerFromChunk(chunk: string, index: number) {
+  const match = chunk.match(/^([A-Za-z][A-Za-z .'-]{1,40}):\s+(.+)$/);
+
+  if (match) {
+    return {
+      speaker: match[1].trim(),
+      text: match[2].trim(),
+    };
+  }
+
+  return {
+    speaker: index === 0 ? "Speaker" : `Speaker ${index + 1}`,
+    text: chunk.trim(),
+  };
+}
+
+export function buildSourceTextFromSession(session: SessionRecord) {
+  return session.transcript
+    .map((segment) => `${segment.speaker}: ${segment.text}`)
+    .join("\n\n");
+}
+
+export function buildAdaptedNarrative(
+  session: SessionRecord,
+  audience: AudienceMode,
+) {
+  return session.transcript
+    .map((segment) => segment.audienceVersions[audience])
+    .join("\n\n");
+}
+
+export function buildFallbackSessionFromText(options: {
+  id: string;
+  title: string;
+  subtitle: string;
+  kind: SessionKind;
+  inputLanguage: InputLanguageCode;
+  outputLanguage: OutputLanguageCode;
+  sourceText: string;
+}) {
+  const chunks = splitSourceIntoChunks(options.sourceText);
+  let currentStart = 0;
+
+  const transcript = chunks.map((chunk, index) => {
+    const { speaker, text } = extractSpeakerFromChunk(chunk, index);
+    const duration = Math.max(4800, text.split(/\s+/).length * 420);
+
+    const segment = buildGeneratedSegment({
+      id: `${options.kind}-${index + 1}`,
+      text,
+      speaker,
+      speakerRole: "Captured input",
+      startMs: currentStart,
+      endMs: currentStart + duration,
+    });
+
+    currentStart += duration;
+
+    return segment;
+  });
+
+  return buildFallbackSession({
+    id: options.id,
+    title: options.title,
+    subtitle: options.subtitle,
+    kind: options.kind,
+    inputLanguage: options.inputLanguage,
+    outputLanguage: options.outputLanguage,
+    transcript,
+  });
 }

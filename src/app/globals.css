@@ -157,6 +157,25 @@ body {
 }
 
 @layer utilities {
+  .light-canvas {
+    --background: var(--bg-light);
+    --foreground: var(--ink);
+    --card: rgba(255, 255, 255, 0.96);
+    --card-foreground: var(--ink);
+    --muted: #ede8f8;
+    --muted-foreground: rgba(23, 19, 41, 0.8);
+    --border: var(--line-dark);
+    --ring: rgba(124, 77, 255, 0.34);
+    --shadow-soft: 0 30px 90px rgba(23, 19, 41, 0.09);
+    --shadow-panel: 0 18px 44px rgba(23, 19, 41, 0.08);
+    color-scheme: light;
+    background:
+      radial-gradient(circle at top left, rgba(124, 77, 255, 0.1), transparent 24%),
+      radial-gradient(circle at top right, rgba(124, 77, 255, 0.05), transparent 28%),
+      linear-gradient(180deg, #fcfbf8 0%, #f6f4ee 100%);
+    color: var(--foreground);
+  }
+
   .page-shell {
     @apply mx-auto w-full max-w-[1460px] px-5 sm:px-8 lg:px-10;
   }
