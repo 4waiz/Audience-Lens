@@ -659,24 +659,24 @@ export function CommonGroundProductPage({
       <main className="section-shell py-5 sm:py-6 lg:py-8">
         <section
           id="intro"
-          className="surface-dark relative overflow-hidden rounded-[32px] px-6 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
+          className="surface-dark relative overflow-hidden rounded-[32px] px-5 py-8 sm:px-7 sm:py-10 lg:px-10 lg:py-12"
         >
           <div className="dark-grid-fade absolute inset-0 opacity-60" aria-hidden />
           <div className="relative mx-auto flex max-w-5xl flex-col items-center text-center">
             <p className="text-[12px] font-semibold uppercase tracking-[0.28em] text-white/56">
               Real-time audience adaptation
             </p>
-            <h1 className="mt-5 max-w-[11ch] text-[clamp(3rem,7vw,5.6rem)] font-semibold leading-[0.92] tracking-[-0.07em] text-white">
+            <h1 className="mt-4 max-w-[12ch] text-[clamp(2.4rem,5.8vw,4.6rem)] font-semibold leading-[0.9] tracking-[-0.065em] text-white">
               Speak once. Meet people where they are.
             </h1>
-            <p className="mt-5 max-w-[42rem] text-base leading-7 text-white/72 sm:text-lg">
+            <p className="mt-4 max-w-[38rem] text-[15px] leading-6 text-white/72 sm:text-base">
               Common Ground keeps the original message visible, rewrites it for the room,
               and generates a clean recap you can share immediately.
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
               <Button
-                size="lg"
+                size="default"
                 onClick={() => {
                   loadPreset(activePresetId);
                   focusWorkspace("sample");
@@ -685,7 +685,7 @@ export function CommonGroundProductPage({
                 Open demo
               </Button>
               <Button
-                size="lg"
+                size="default"
                 variant="outline"
                 className="border-white/20 bg-white/8 text-white hover:bg-white/14 hover:text-white"
                 onClick={() => focusWorkspace(speechSupported ? "speak" : "type")}
@@ -694,14 +694,14 @@ export function CommonGroundProductPage({
               </Button>
             </div>
 
-            <div className="mt-10 grid w-full gap-3 text-left md:grid-cols-3">
+            <div className="mt-8 grid w-full gap-2.5 text-left md:grid-cols-3">
               {proofItems.map((item) => {
                 const Icon = item.icon;
 
                 return (
                   <div
                     key={item.title}
-                    className="rounded-[24px] border border-white/10 bg-white/6 p-4 backdrop-blur-sm"
+                    className="rounded-[22px] border border-white/10 bg-white/6 p-3.5 backdrop-blur-sm"
                   >
                     <div className="flex items-center gap-2">
                       <Icon className="size-4 text-white" />
