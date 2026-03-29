@@ -66,7 +66,7 @@ export function LandingPage() {
         </div>
       </div>
 
-      <header className="sticky top-0 z-50 border-b border-[var(--line-dark)] bg-[rgba(252,251,248,0.94)] backdrop-blur">
+      <header className="sticky top-0 z-50 border-b border-[var(--line-dark)] bg-[rgba(252,251,248,0.94)] shadow-[0_10px_24px_rgba(23,19,41,0.04)] backdrop-blur">
         <div className="page-shell flex items-center justify-between gap-4 py-4">
           <RelayLogo />
           <nav className="hidden items-center gap-8 text-sm font-medium text-[rgba(23,19,41,0.74)] lg:flex">
@@ -95,11 +95,11 @@ export function LandingPage() {
       <main>
         <section className="relative overflow-hidden border-b border-[var(--line-dark)]">
           <div className="absolute inset-0 grid-fade" />
-          <div className="page-shell relative grid gap-10 py-12 lg:grid-cols-[minmax(0,0.88fr)_minmax(560px,1.12fr)] lg:items-start lg:py-16 xl:gap-12">
-            <div className="space-y-7 pt-4 lg:max-w-[640px] lg:pt-10">
+          <div className="page-shell relative grid gap-10 py-12 lg:grid-cols-[minmax(0,0.96fr)_minmax(520px,1.04fr)] lg:items-start lg:py-16 xl:gap-12">
+            <div className="space-y-7 pt-4 lg:max-w-none lg:pt-10">
               <div className="space-y-5">
                 <p className="eyebrow">Real-time communication adaptation</p>
-                <h1 className="max-w-[11ch] text-[var(--ink)]">
+                <h1 className="max-w-[10.5ch] text-[var(--ink)] lg:text-[5.25rem] xl:text-[5.9rem]">
                   Speak once. Meet people <span className="capsule-outline">where they are.</span>
                 </h1>
                 <p className="max-w-xl body-large">

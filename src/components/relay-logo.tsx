@@ -22,10 +22,10 @@ export function RelayLogo({
         priority
       />
       <span className="flex flex-col gap-0.5">
-        <span className="text-lg font-semibold tracking-[-0.04em] text-[var(--ink)]">
+        <span className="text-base font-semibold tracking-[-0.04em] text-[var(--ink)] sm:text-lg">
           Common Ground
         </span>
-        <span className="text-[13px] text-[rgba(23,19,41,0.74)]">
+        <span className="hidden text-[13px] text-[rgba(23,19,41,0.74)] sm:block">
           Speak once. Meet people where they are.
         </span>
       </span>
