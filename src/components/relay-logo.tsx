@@ -6,9 +6,13 @@ import { cn } from "@/lib/utils";
 export function RelayLogo({
   href = "/",
   className,
+  tone = "light",
+  showTagline = true,
 }: {
   href?: string;
   className?: string;
+  tone?: "light" | "dark";
+  showTagline?: boolean;
 }) {
   return (
     <Link href={href} className={cn("inline-flex items-center gap-4", className)}>
@@ -22,10 +26,21 @@ export function RelayLogo({
         priority
       />
       <span className="flex flex-col gap-0.5">
-        <span className="text-base font-semibold tracking-[-0.04em] text-[var(--ink)] sm:text-lg">
+        <span
+          className={cn(
+            "text-base font-semibold tracking-[-0.04em] sm:text-lg",
+            tone === "dark" ? "text-white" : "text-[var(--ink)]",
+          )}
+        >
           Common Ground
         </span>
-        <span className="hidden text-[13px] text-[rgba(23,19,41,0.74)] sm:block">
+        <span
+          className={cn(
+            "text-[13px]",
+            showTagline ? "hidden sm:block" : "hidden",
+            tone === "dark" ? "text-white/72" : "text-[rgba(23,19,41,0.74)]",
+          )}
+        >
           Speak once. Meet people where they are.
         </span>
       </span>

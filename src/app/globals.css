@@ -6,6 +6,8 @@
   --bg-dark: #171329;
   --bg-dark-soft: #211b38;
   --ink: #171329;
+  --ink-tint: #625679;
+  --ink-tint-strong: #4f4468;
   --ink-soft: rgba(23, 19, 41, 0.82);
   --ink-faint: rgba(23, 19, 41, 0.68);
   --purple: #7c4dff;
@@ -200,10 +202,10 @@ body {
     justify-content: center;
     border: 1.5px solid rgba(124, 77, 255, 0.44);
     border-radius: 999px;
-    padding: 0.08em 0.34em 0.18em;
+    padding: 0.04em 0.28em 0.12em;
     background: rgba(255, 255, 255, 0.76);
     color: var(--purple);
-    box-shadow: 0 10px 24px rgba(124, 77, 255, 0.08);
+    box-shadow: 0 8px 18px rgba(124, 77, 255, 0.08);
   }
 
   .divider-line {

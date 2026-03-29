@@ -17,6 +17,6 @@ describe("LandingPage", () => {
     expect(
       screen.getAllByRole("link", { name: /Start live session/i }).length,
     ).toBeGreaterThan(0);
-    expect(screen.getAllByText(/Audience adaptation/i).length).toBeGreaterThan(0);
+    expect(screen.getByText(/Audience-aware rewrite/i)).toBeInTheDocument();
   });
 });
