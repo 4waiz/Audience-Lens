@@ -107,18 +107,18 @@ const proofItems = [
   },
 ] as const;
 
-const useCases = [
+const workflowSteps = [
   {
-    title: "Client calls",
-    body: "Turn internal language into clear customer wording.",
+    title: "1. Capture",
+    body: "Paste, speak, or load the message you want to adapt.",
   },
   {
-    title: "Onboarding",
-    body: "Add context for someone new to the topic.",
+    title: "2. Adapt",
+    body: "Switch audience modes and watch the rewrite update instantly.",
   },
   {
-    title: "Status updates",
-    body: "Simplify technical updates without losing the point.",
+    title: "3. Recap",
+    body: "Generate a summary, decision, and action you can share fast.",
   },
 ] as const;
 
@@ -629,47 +629,108 @@ export function CommonGroundProductPage({
           <RelayLogo className="gap-3" href="/" showTagline={false} />
           <nav className="hidden items-center gap-6 md:flex">
             <a
-              href="#workspace"
+              href="#intro"
               className="text-sm font-medium text-[var(--ink-tint)] transition hover:text-[var(--ink)]"
             >
-              Workspace
+              Product
             </a>
             <a
-              href="#proof"
+              href="#demo"
               className="text-sm font-medium text-[var(--ink-tint)] transition hover:text-[var(--ink)]"
             >
-              Why it works
+              Demo
             </a>
             <a
-              href="#use-cases"
+              href="#flow"
               className="text-sm font-medium text-[var(--ink-tint)] transition hover:text-[var(--ink)]"
             >
-              Use cases
+              Flow
             </a>
           </nav>
           <Button
             size="sm"
-            onClick={() => focusWorkspace(speechSupported ? "speak" : "type")}
+            onClick={() => focusWorkspace("sample")}
           >
-            {speechSupported ? "Start live" : "Try it now"}
+            Try demo
           </Button>
         </div>
       </header>
 
       <main className="section-shell py-5 sm:py-6 lg:py-8">
         <section
-          id="workspace"
+          id="intro"
+          className="surface-dark relative overflow-hidden rounded-[32px] px-6 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20"
+        >
+          <div className="dark-grid-fade absolute inset-0 opacity-60" aria-hidden />
+          <div className="relative mx-auto flex max-w-5xl flex-col items-center text-center">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.28em] text-white/56">
+              Real-time audience adaptation
+            </p>
+            <h1 className="mt-5 max-w-[11ch] text-[clamp(3rem,7vw,5.6rem)] font-semibold leading-[0.92] tracking-[-0.07em] text-white">
+              Speak once. Meet people where they are.
+            </h1>
+            <p className="mt-5 max-w-[42rem] text-base leading-7 text-white/72 sm:text-lg">
+              Common Ground keeps the original message visible, rewrites it for the room,
+              and generates a clean recap you can share immediately.
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Button
+                size="lg"
+                onClick={() => {
+                  loadPreset(activePresetId);
+                  focusWorkspace("sample");
+                }}
+              >
+                Open demo
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-white/20 bg-white/8 text-white hover:bg-white/14 hover:text-white"
+                onClick={() => focusWorkspace(speechSupported ? "speak" : "type")}
+              >
+                {speechSupported ? "Start live" : "Start typing"}
+              </Button>
+            </div>
+
+            <div className="mt-10 grid w-full gap-3 text-left md:grid-cols-3">
+              {proofItems.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.title}
+                    className="rounded-[24px] border border-white/10 bg-white/6 p-4 backdrop-blur-sm"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icon className="size-4 text-white" />
+                      <p className="text-sm font-semibold tracking-[-0.02em] text-white">
+                        {item.title}
+                      </p>
+                    </div>
+                    <p className="mt-2 text-sm text-white/64">{item.body}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="demo"
           ref={workspaceRef}
-          className="surface overflow-hidden border-[rgba(23,19,41,0.1)] bg-white/92 p-4 shadow-soft sm:p-6 lg:p-7"
+          className="surface mt-6 overflow-hidden border-[rgba(23,19,41,0.1)] bg-white/92 p-4 shadow-soft sm:p-6 lg:p-7"
         >
           <div className="space-y-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl space-y-3">
-                <p className="eyebrow">Real-time audience adaptation</p>
-                <h1 className="max-w-[13ch] text-[clamp(2.35rem,5.6vw,4rem)] font-semibold leading-[0.94] tracking-[-0.065em] text-[var(--ink)]">
-                  Speak once. Meet people where they are.
-                </h1>
+                <p className="eyebrow">Live demo</p>
+                <h2 className="max-w-[12ch] text-[clamp(2.15rem,4.8vw,3.5rem)] font-semibold leading-[0.96] tracking-[-0.06em] text-[var(--ink)]">
+                  Try the product now.
+                </h2>
                 <p className="max-w-[40rem] text-[15px] leading-6 text-[var(--ink-tint)] sm:text-base">
+                  Speak once. Meet people where they are.
                   Paste, speak, or load a scenario. Then adapt it for the room in real time.
                 </p>
               </div>
@@ -1015,9 +1076,15 @@ export function CommonGroundProductPage({
           })}
         </section>
 
-        <section id="use-cases" className="mt-6">
+        <section id="flow" className="mt-6">
+          <div className="mb-4 space-y-2">
+            <p className="eyebrow">Product flow</p>
+            <p className="text-2xl font-semibold tracking-[-0.04em] text-[var(--ink)] sm:text-3xl">
+              From message to recap.
+            </p>
+          </div>
           <div className="grid gap-3 md:grid-cols-3">
-            {useCases.map((item) => (
+            {workflowSteps.map((item) => (
               <div
                 key={item.title}
                 className="rounded-[28px] border border-[rgba(23,19,41,0.08)] bg-white/88 p-5 shadow-panel"
