@@ -225,6 +225,16 @@ export function CommonGroundProductPage({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStage, setUploadStage] = useState<ProcessingStage>("idle");
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [aiVersions, setAiVersions] = useState<Record<AudienceMode, string> | null>(null);
+  const [isAdapting, setIsAdapting] = useState(false);
+  const [lastAdaptedText, setLastAdaptedText] = useState("");
+  const [isGeneratingRecap, setIsGeneratingRecap] = useState(false);
+  const [aiRecap, setAiRecap] = useState<{
+    summary: string;
+    decision: string;
+    action: string;
+    risk: string;
+  } | null>(null);
 
   const deferredSourceText = useDeferredValue(sourceText);
   const activeScenario = useMemo(
@@ -288,8 +298,54 @@ export function CommonGroundProductPage({
       return "";
     }
 
+    if (aiVersions && deferredSourceText === lastAdaptedText) {
+      return aiVersions[audience] || buildAdaptedNarrative(currentSession, audience);
+    }
+
     return buildAdaptedNarrative(currentSession, audience);
-  }, [audience, currentSession]);
+  }, [audience, currentSession, aiVersions, deferredSourceText, lastAdaptedText]);
+
+  useEffect(() => {
+    const textToAdapt = normalizeText(deferredSourceText);
+    if (!textToAdapt || mode === "sample" || textToAdapt === lastAdaptedText) {
+      return;
+    }
+
+    const abortController = new AbortController();
+
+    async function fetchAiAdaptation() {
+      setIsAdapting(true);
+      try {
+        const response = await fetch("/api/adapt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: textToAdapt }),
+          signal: abortController.signal,
+        });
+
+        if (!response.ok) throw new Error("AI request failed");
+
+        const data = await response.json();
+        if (data.versions) {
+          setAiVersions(data.versions);
+          setLastAdaptedText(textToAdapt);
+        }
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          console.error("AI Adaptation Error:", err);
+        }
+      } finally {
+        setIsAdapting(false);
+      }
+    }
+
+    const timer = setTimeout(fetchAiAdaptation, 1000);
+
+    return () => {
+      clearTimeout(timer);
+      abortController.abort();
+    };
+  }, [deferredSourceText, mode, lastAdaptedText]);
 
   const currentRecapKey = useMemo(
     () =>
@@ -306,7 +362,7 @@ export function CommonGroundProductPage({
   const recapReady = Boolean(currentSession && generatedRecapKey === currentRecapKey);
   const recap =
     recapReady && currentSession
-      ? buildRecapSnapshot(currentSession, audience)
+      ? (aiRecap || buildRecapSnapshot(currentSession, audience))
       : null;
 
   const appendRecognizedText = useCallback((text: string) => {
@@ -487,6 +543,9 @@ export function CommonGroundProductPage({
       setUploadError(null);
       setSelectedFile(null);
       setUploadStage("idle");
+      setAiVersions(null);
+      setAiRecap(null);
+      setLastAdaptedText("");
     });
   }
 
@@ -500,6 +559,9 @@ export function CommonGroundProductPage({
       stopListening();
       setMode("upload");
       setGeneratedRecapKey(null);
+      setAiVersions(null);
+      setAiRecap(null);
+      setLastAdaptedText("");
 
       if (uploadedSession) {
         setSourceText(uploadSourceText);
@@ -511,18 +573,25 @@ export function CommonGroundProductPage({
     if (nextMode === "speak") {
       setMode("speak");
       setGeneratedRecapKey(null);
+      setAiVersions(null);
+      setAiRecap(null);
+      setLastAdaptedText("");
       return;
     }
 
     stopListening();
     setMode("type");
     setGeneratedRecapKey(null);
+    setAiVersions(null);
+    setAiRecap(null);
+    setLastAdaptedText("");
   }
 
   function handleSourceChange(nextValue: string) {
     setSourceText(nextValue);
     setGeneratedRecapKey(null);
     setAutoGenerateRecap(false);
+    setAiRecap(null);
 
     if (mode !== "speak") {
       setMode("type");
@@ -535,8 +604,34 @@ export function CommonGroundProductPage({
       return;
     }
 
-    setGeneratedRecapKey(currentRecapKey);
-    toast.success("Recap ready.");
+    if (mode !== "sample" && sourceText) {
+      setIsGeneratingRecap(true);
+      try {
+        const response = await fetch("/api/recap", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: sourceText, audience }),
+        });
+
+        if (!response.ok) throw new Error("Recap failed");
+
+        const data = await response.json();
+        if (data.recap) {
+          setAiRecap(data.recap);
+          setGeneratedRecapKey(currentRecapKey);
+          toast.success("Recap ready.");
+        }
+      } catch (err) {
+        console.error("AI Recap Error:", err);
+        toast.error("AI recap failed. Using demo data.");
+        setGeneratedRecapKey(currentRecapKey);
+      } finally {
+        setIsGeneratingRecap(false);
+      }
+    } else {
+      setGeneratedRecapKey(currentRecapKey);
+      toast.success("Recap ready.");
+    }
   }
 
   async function handleCopyAdaptedOutput() {
@@ -570,6 +665,9 @@ export function CommonGroundProductPage({
     setSelectedFile(null);
     setUploadStage("idle");
     setUploadError(null);
+    setAiVersions(null);
+    setAiRecap(null);
+    setLastAdaptedText("");
   }
 
   async function handleProcessUpload() {
@@ -958,7 +1056,12 @@ export function CommonGroundProductPage({
                 </div>
 
                 <div className="mt-4 min-h-[340px] rounded-[24px] border border-white/10 bg-white/6 p-4 sm:p-5">
-                  {adaptedOutput ? (
+                  {isAdapting ? (
+                    <div className="flex h-full min-h-[280px] flex-col items-center justify-center space-y-4">
+                      <LoaderCircle className="size-8 animate-spin text-white/40" />
+                      <p className="text-sm text-white/64">Gemini is adapting for {audience}...</p>
+                    </div>
+                  ) : adaptedOutput ? (
                     <p className="whitespace-pre-wrap text-sm leading-7 text-white/90">
                       {adaptedOutput}
                     </p>
@@ -972,8 +1075,12 @@ export function CommonGroundProductPage({
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button onClick={handleGenerateRecap}>
-                <Sparkles className="size-4" />
+              <Button onClick={handleGenerateRecap} disabled={isGeneratingRecap}>
+                {isGeneratingRecap ? (
+                  <LoaderCircle className="size-4 animate-spin" />
+                ) : (
+                  <Sparkles className="size-4" />
+                )}
                 {recapReady ? "Refresh recap" : "Generate recap"}
               </Button>
               <Button variant="outline" onClick={handleCopyAdaptedOutput}>
