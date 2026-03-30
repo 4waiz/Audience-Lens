@@ -3,3 +3,16 @@ node_modules/
 test-results/
 playwright-report/
 tsconfig.tsbuildinfo
+
+# Sensitive Keys and local env secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+*.log

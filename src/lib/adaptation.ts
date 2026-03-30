@@ -68,6 +68,8 @@ const simplifications: Array<[RegExp, string]> = [
   [/\bprogressive activation\b/gi, "staged rollout"],
   [/\bshorthand\b/gi, "internal short wording"],
   [/\bmacros\b/gi, "saved support replies"],
+  [/\btommrow\b/gi, "tomorrow"],
+  [/\brequirement of the customers\b/gi, "customer requirements"],
 ];
 
 function toSentenceCase(text: string) {
@@ -91,9 +93,9 @@ function simplifyText(text: string) {
 
 function splitClauses(text: string) {
   return text
-    .split(/[.;]|, and |, but /i)
+    .split(/[.;]|\band\b|\bbut\b|, and |, but /i)
     .map((part) => toSentenceCase(part.trim()))
-    .filter(Boolean);
+    .filter((part) => part.length > 2);
 }
 
 function extractGlossary(text: string) {
@@ -139,7 +141,14 @@ export function adaptText(text: string, audience: AudienceMode) {
   const secondClause = clauses[1];
 
   if (audience === "engineer") {
-    return toSentenceCase(text.trim());
+    return toSentenceCase(
+      [
+        `Technical scope: ${firstClause.replace(/\.$/, "")}`,
+        secondClause ? `Implementation detail: ${secondClause.replace(/\.$/, "")}` : undefined,
+      ]
+        .filter(Boolean)
+        .join(". ") || `Technical update: ${text.trim()}`,
+    );
   }
 
   if (audience === "executive") {
@@ -181,6 +190,32 @@ export function adaptText(text: string, audience: AudienceMode) {
       .map((clause) => clause.replace(/:/g, "."))
       .join(". ") || "Here is the simpler version of the message.",
   );
+}
+
+export async function adaptTextAI(
+  text: string,
+  audience: AudienceMode,
+  inputLanguage: InputLanguageCode = "en-US",
+  outputLanguage: OutputLanguageCode = "en",
+) {
+  try {
+    const response = await fetch("/api/adapt", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, audience, inputLanguage, outputLanguage }),
+    });
+
+    if (!response.ok) {
+      console.warn(`[Adaptation] AI API returned ${response.status}. Falling back to local rules.`);
+      return adaptText(text, audience);
+    }
+
+    const data = (await response.json()) as { rewrite: string };
+    return data.rewrite;
+  } catch (error) {
+    console.error("AI adaptation fallback to local rules:", error);
+    return adaptText(text, audience);
+  }
 }
 
 function summarizeMeaning(text: string) {

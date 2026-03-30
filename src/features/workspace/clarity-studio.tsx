@@ -1,12 +1,15 @@
 "use client";
 
-import { Languages, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Languages, LoaderCircle, Sparkles } from "lucide-react";
 
 import { AudienceSelector } from "@/components/audience-selector";
 import { StatusPill } from "@/components/status-pill";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { adaptTextAI } from "@/lib/adaptation";
 import type { AudienceMode, OutputLanguageCode, SessionRecord, TranscriptSegment } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export function ClarityStudio({
   audience,
@@ -23,6 +26,40 @@ export function ClarityStudio({
 }) {
   const source = activeSegment ?? visibleSession.transcript.at(-1);
   const visibleKeyPoints = visibleSession.keyPoints.slice(0, 3);
+
+  const [aiRewrite, setAiRewrite] = useState<string | null>(null);
+  const [isAdapting, setIsAdapting] = useState(false);
+
+  useEffect(() => {
+    if (!source?.text) {
+      setAiRewrite(null);
+      return;
+    }
+
+    let active = true;
+
+    async function fetchAiAdaptation() {
+      setIsAdapting(true);
+      try {
+        const result = await adaptTextAI(source!.text, audience, visibleSession.inputLanguage, outputLanguage);
+        if (active) {
+          setAiRewrite(result);
+        }
+      } catch (error) {
+        console.error("Clarity Studio AI error:", error);
+      } finally {
+        if (active) {
+          setIsAdapting(false);
+        }
+      }
+    }
+
+    const timeout = window.setTimeout(fetchAiAdaptation, 400);
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+    };
+  }, [source?.text, audience, outputLanguage, visibleSession.inputLanguage]);
 
   return (
     <Card className="min-h-[580px]">
@@ -80,9 +117,18 @@ export function ClarityStudio({
           <TabsContent value="audience">
             <div className="space-y-5 rounded-[24px] border border-border bg-[#faf9f7] p-5">
               <p className="text-sm font-medium text-foreground">Adapted for {audience}</p>
-              <p className="text-sm leading-7 text-foreground">
-                {source?.audienceVersions[audience] ??
-                  visibleSession.audienceRecaps[audience]}
+              <p className={cn(
+                "text-sm leading-7 transition",
+                isAdapting ? "text-muted-foreground opacity-50" : "text-foreground"
+              )}>
+                {isAdapting && !aiRewrite ? (
+                  <span className="flex items-center gap-2">
+                    <LoaderCircle className="size-4 animate-spin text-accent" />
+                    Gemini is adapting for {audience}...
+                  </span>
+                ) : (
+                  aiRewrite ?? (source?.audienceVersions[audience] || visibleSession.audienceRecaps[audience])
+                )}
               </p>
               <div className="rounded-[20px] border border-border bg-white p-4">
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-[rgba(23,19,41,0.58)]">
